@@ -12,10 +12,6 @@ use DB;
 
 class Dashboard{
 
-    public function __construct(){
-        
-    }
-
     public function index(){
         
         $data['papeis']             = PAP::getPapeis();
@@ -37,6 +33,7 @@ class Dashboard{
         $data['contagemTipos']          = PAT::getContagemTiposAtivos();
         $data['contagemSubTipos']       = PAT::getContagemTiposAtivos([],'subTipo');
         $data['contagemPapeis']         = PAT::getContagemPapeis();
+        $data['permissaoValores']       = RC::redisGet( session()->get('autenticado.id_user').'_permissao_valores' );
         
         return view('dashboard.index')->with(['data'=>$data]);
     }

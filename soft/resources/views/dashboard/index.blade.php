@@ -12,8 +12,8 @@
                 
                 $stPermissaoValores = 0;
                 
-                if( !is_null(Redis::get( session()->get('autenticado.id_user').'_permissao_valores' )) ){
-                    $stPermissaoValores = Redis::get( session()->get('autenticado.id_user').'_permissao_valores' );
+                if( !is_null( $data['permissaoValores'] ) ){
+                    $stPermissaoValores = $data['permissaoValores'];
                 }
 
             @endphp
