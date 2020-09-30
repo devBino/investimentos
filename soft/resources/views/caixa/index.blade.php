@@ -85,6 +85,12 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
+                        @php
+                            $arrMeses = [
+                                "","JAN","FEV","MAR","ABR","MAI","JUN",
+                                "JUL","AGO","SET","OUT","NOV","DEZ"
+                            ];
+                        @endphp
                         <label>Mês</label>
                         <select name="mes" id="mes" class="form-control form-control-sm">
                             <option></option>
@@ -94,8 +100,8 @@
                                 @else
                                     @php $mes = $i; @endphp
                                 @endif
-
-                                <option value="{{$mes}}">{{unserialize(Redis::get('meses'))[$i]}}</option>
+                                
+                                <option value="{{$mes}}">{{$arrMeses[ (int )$mes]}}</option>
                             @endfor
                         </select>
                     </div>

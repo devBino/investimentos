@@ -17,6 +17,7 @@ class Permissao{
         $dados['senha_user']    = $params[0]->dsSenha;
         $dados['permissao']     = $params[0]->cdPermissao;
         $dados['tipo_papel']    = ['','RENDA FIXA','RENDA VARIAVEL','HEDGE'];
+        $dados['sub_tipo']      = ['','RENDA FIXA','FUNDOS IMOBILIÁRIOS','AÇÕES','HEDGE'];
         $dados['tipo_provento'] = ['','DIVIDENDO','JUROS SOB CAP. PRÓPRIO'];
 
         $taxaSelic      = COT::getTaxaSelic();

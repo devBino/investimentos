@@ -131,8 +131,8 @@
                             
                             <tr class="tr_provento">
                                 <td>{{ $val->nmPapel }}</td>
-                                <td>{{ unserialize( Redis::get('tipo_provento') )[ $val->cdTipo ] }}</td>
-                                <td>{{ unserialize( Redis::get('sub_tipo_papel') )[ $val->subTipo ] }}</td>
+                                <td>{{ session()->get('autenticado')['tipo_provento'][$val->cdTipo] }}</td>
+                                <td>{{ session()->get('autenticado')['sub_tipo'][$val->subTipo] }}</td>
                                 <td>R$ {{ number_format($val->valor,2,',','.') }}</td>
                                 <td>{{ $val->qtde }}</td>
                                 <td>R$ {{ number_format($val->subTotal,2,',','.') }}</td>
@@ -192,8 +192,8 @@
                         <div class="col-sm-6 form-group">
                             <select name="tipo" id="tipoPesquisa" class="form-control form-control-sm">
                                 <option></option>
-                                <option value="1">{{unserialize(Redis::get('tipo_provento'))[1]}}</option>
-                                <option value="2">{{unserialize(Redis::get('tipo_provento'))[2]}}</option>
+                                <option value="1">{{session()->get('autenticado')['tipo_provento'][1]}}</option>
+                                <option value="2">{{session()->get('autenticado')['tipo_provento'][2]}}</option>
                             </select>                       
                         </div>
                         <div class="col-sm-2 form-group">

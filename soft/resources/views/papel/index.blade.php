@@ -111,8 +111,8 @@
 
                                 <td>{{$val->nmPapel}}</td>
                                 <td><center>R$ {{ number_format($val->cotacao,2,',','.') }}</center></td>
-                                <td>{{ unserialize(Redis::get('tipo_papel'))[ $val->cdTipo ] }}</td>
-                                <td>{{ unserialize(Redis::get('sub_tipo_papel'))[ $val->subTipo ] }}</td>
+                                <td>{{ session()->get('autenticado')['tipo_papel'][$val->cdTipo] }}</td>
+                                <td>{{ session()->get('autenticado')['sub_tipo'][$val->subTipo] }}</td>
                                 <td> <center>{{$val->qtdeAportes}}x </center></td>
                                 <td><center>R$ {{ number_format($val->totalAportado,2,',','.') }}</center></td>
                                 <td><center>{{$val->qtdeResgates}}</center></td>

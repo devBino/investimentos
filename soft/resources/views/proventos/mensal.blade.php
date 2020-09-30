@@ -60,8 +60,9 @@
                             <label>Sub Tipo</label>
                             <select name="subTipo" id="subTipo" class="form-control form-control-sm">
                                 <option></option>
-                                <option value="2">{{ unserialize(Redis::get('sub_tipo_papel'))[2]}}</option>
-                                <option value="3">{{ unserialize(Redis::get('sub_tipo_papel'))[3]}}</option>
+                                
+                                <option value="2">{{ session()->get('autenticado')['sub_tipo'][2] }}</option>
+                                <option value="3">{{ session()->get('autenticado')['sub_tipo'][3] }}</option>
                             </select>
                         </div>
 
