@@ -18,7 +18,7 @@ class Papel{
 
     public static function getPapeis($params=[]){
         $papeis = DB::table('papel')
-            ->select('cdPapel','nmPapel','cotacao','cdTipo')
+            ->select('cdPapel','nmPapel','cotacao','cdTipo','subTipo')
             ->where('cdUsuario',session()->get('autenticado.id_user'))
             ->get();
 

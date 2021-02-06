@@ -6,7 +6,7 @@
         <h6 class="text text-secondary">
             <div class="row">
                 <div class="col-sm-10">        
-                    Proventos Mensais
+                    Proventos Por Papel
                 </div>
                 <div class="col-sm-2 d-flex justify-content-end">
                     <a href="/provento-papel" class="text text-secondary mt-1 ml-2"><i class="fas fa-file"></i> Papel</a>
@@ -21,7 +21,7 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="borda">
-            <form action="/provento-mensal" method="post">
+            <form action="/provento-papel" method="post">
                 
                 <input type="hidden" id="tkn" name="_token" value="{!! csrf_token() !!}">
 
@@ -31,20 +31,6 @@
 
                     <div class="row">
                         
-                        <div class="col-sm-2 form-group">
-                            <label>Ano</label>
-                            <select name="ano" id="ano" class="form-control form-control-sm">
-                                <option></option>
-                                <option value="2019">2019</option>
-                                <option value="2020">2020</option>
-                                <option value="2021">2021</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
-                            </select>
-                        </div>                        
-
                         <div class="col-sm-3 form-group">
                             <label>Papel</label>
                             <select name="papel" id="papel" class="form-control form-control-sm">
@@ -59,7 +45,7 @@
                             </select>
                         </div>
                     
-                        <div class="col-sm-2 form-group">
+                        <div class="col-sm-3 form-group">
                             <label>Sub Tipo</label>
                             <select name="subTipo" id="subTipo" class="form-control form-control-sm">
                                 <option></option>
@@ -76,7 +62,7 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-4 form-group">
+                        <div class="col-sm-5 form-group">
                             
                         </div>                        
                     </div>
@@ -92,85 +78,70 @@
 
 
 <div class="row">
-    <div class="col-sm-3">
+    
+    <div class="col-sm-12">
         <div class="borda" style="width:100%;height:355px;">
             <table class="table table-sm table-bordered table-striped">
                 <thead>
                     <tr class="table-active">
-                        <th>Mês</th>
+                        <th>Papel</th>
+                        <th>Total Cotas</th>
+                        <th>Total Aportado</th>
+                        <th>Posição Atual</th>
                         <th>Proventos</th>
+                        <th>D. Yield</th>
+                        <th>Valorização Real</th>
+                        <th>Valorização Percentual</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @php 
-                        $totalProventos = 0;
-                    @endphp
-
-                    @if( isset($data['proventos']) && count($data['proventos']) > 0 )
-                        @foreach($data['proventos'] as $num => $val)
+                    @if( isset($data['proventos']) && count($data['proventos']) )
+                        @foreach( $data['proventos'] as $num => $val )
                             <tr>
-                                <td>{{$val['nomeMes']}}</td>
-                                <td><center>R$ {{ number_format($val['valor'],2,',','.') }}</center></td>
+                                <td>{{$val['papel']}}</td>
+                                <td>{{$val['qtdeCotas']}}</td>
+                                <td>R$ {{number_format($val['totalAportado'],2,',','.')}}</td>
+                                <td>R$ {{number_format($val['posicaoAtual'],2,',','.')}}</td>
+                                <td>R$ {{number_format($val['proventosPagos'],2,',','.')}}</td>
+                                <td>{{number_format($val['dYield'],2,',','.')}}</td>
+                                <td>R$ {{number_format($val['valorizacaoReal'],2,',','.')}}</td>
+                                
+                                @if( $val['valorizacaoReal'] > 0 )
+                                    <th><span class="text text-success">{{number_format($val['valorizacaoPercentual'],2,',','.')}} %</span></th>
+                                @else
+                                    <th><span class="text text-danger">{{number_format($val['valorizacaoPercentual'],2,',','.')}} %</span></th>
+                                @endif
                             </tr>
-
-                            @php
-                                $totalProventos += $val['valor'];
-                            @endphp
-
                         @endforeach
                     @endif
                 </tbody>
                 <tfoot>
                     <tr class="table-active">
                         <th>Total</th>
-                        <th>R$ {{number_format($totalProventos,2,',','.')}}</th>
+                        @if( isset($data['totais']) && count($data['totais']) )
+                            <th>{{$data['totais']['qtdeCotas']}}</th>
+                            <th>R$ {{number_format($data['totais']['totalAportado'],2,',','.')}}</th>
+                            <th>R$ {{number_format($data['totais']['posicaoAtual'],2,',','.')}}</th>
+                            <th>R$ {{number_format($data['totais']['proventosPagos'],2,',','.')}}</th>
+                            <th>{{number_format($data['totais']['dYield'],2,',','.')}}</th>
+                            <th>R$ {{number_format($data['totais']['valorizacaoReal'],2,',','.')}}</th>
+
+                            @if( $data['totais']['valorizacaoPercentual'] > 0 )
+                                <th><span class="text text-success">{{number_format($data['totais']['valorizacaoPercentual'],2,',','.')}} %</span></th>
+                            @else
+                                <th><span class="text text-danger">{{number_format($data['totais']['valorizacaoPercentual'],2,',','.')}} %</span></th>
+                            @endif
+
+                        @endif
                     </tr>
                 </tfoot>
             </table>
 
         </div>
     </div>
-    <div class="col-sm-9">
-        
-        @if( isset($data['proventos']) && count($data['proventos']) > 0 )
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-            <script type="text/javascript">
-                google.charts.load('current', {'packages':['bar']});
-                google.charts.setOnLoadCallback(drawChart);
-
-                function drawChart() {
-                    var data = google.visualization.arrayToDataTable([
-                        ['Mes', 'Proventos'],
-                        
-                        @foreach($data['proventos'] as $num => $val)
-                            ["{{$val['nomeMes']}}",{{$val['valor']}}],
-                        @endforeach
-                        
-                    ]);
-
-                    var options = {
-                        chart: {
-                            title: 'Proventos Mensais'
-                        },
-                        legend:{
-                            position: 'none'
-                        }
-                    };
-
-                    var chart = new google.charts.Bar(document.getElementById('divProventos'));
-                    
-                    chart.draw(data, google.charts.Bar.convertOptions(options));
-                }
-            </script>
-        @endif
-
-        <div class="borda">
-            <div id="divProventos" style="width:100%;height:350px;"></div>
-        </div>
-    </div>
+    
 </div>
 
-<script src="{{ asset('/js/mensal.js') }}"></script>
+<script src="{{ asset('/js/papelProventos.js') }}"></script>
 
 @stop

@@ -7,9 +7,10 @@
             <div class="row">
                 <div class="col-sm-10">        
                     Lançamento de Proventos
-                </div>
+                </div>                
                 <div class="col-sm-2 d-flex justify-content-end">
-                    <a href="/provento-mensal" class="text text-secondary mt-1"><i class="fas fa-calendar"></i> Mensal</a>
+                    <a href="/provento-papel" class="text text-secondary mt-1 ml-2"><i class="fas fa-file"></i> Papel</a>
+                    <a href="/provento-mensal" class="text text-secondary mt-1 ml-2"><i class="fas fa-calendar"></i> Mensal</a>
                 </div>
             </div>
         </h6>

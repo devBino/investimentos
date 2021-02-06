@@ -119,4 +119,127 @@ class Provento{
 
     }
 
+    public function proventosPapeis(Request $request){
+        
+        $params = $request->all();
+        
+
+        $data['papeis']         = PAP::getPapeis();
+
+        $papeis = $data['papeis'];
+        $tiposPapeisPagadoresProventos = [2];
+        $result = [];
+        
+        $totais['totalAportado']            = 0;
+        $totais['qtdeCotas']                = 0;
+        $totais['posicaoAtual']             = 0;
+        $totais['proventosPagos']           = 0;
+        $totais['dYield']                   = 0;
+        $totais['valorizacaoReal']          = 0;
+        $totais['valorizacaoPercentual']    = 0;
+
+        $registrosValidos = 0;
+
+        for( $i=0; $i<count($papeis); $i++ ){
+            if( in_array($papeis[$i]->cdTipo,$tiposPapeisPagadoresProventos) ){
+
+                //verifica se foram recebidos filtros do formulário
+                
+                //papel
+                if( isset($params['papel']) && $papeis[$i]->cdPapel != $params['papel'] ){
+                    continue;
+                }
+
+                //subtipo
+                if( isset($params['subTipo']) && $papeis[$i]->subTipo != $params['subTipo'] ){
+                    continue;
+                }
+
+                
+                //busca aporte mais antigo não resgatado                
+                $dadosUltimoAporte = DB::table('aportes')
+                    ->select('dtAporte')
+                    ->where('cdUsuario',session()->get('autenticado.id_user'))
+                    ->where('cdPapel',$papeis[$i]->cdPapel)
+                    ->where('cdStatus',1)
+                    ->limit(1)
+                    ->get();
+
+                //caso nunca tenha aportado no papel
+                if( !count($dadosUltimoAporte) ){
+                    continue;
+                }
+
+                //soma valor total aportado e não resgatado, desde a data recuperada até a presente data                
+                $totalAportado = DB::table('aportes')
+                    ->select('subTotal')
+                    ->where('cdUsuario',session()->get('autenticado.id_user'))
+                    ->where('cdPapel',$papeis[$i]->cdPapel)
+                    ->where('cdStatus',1)
+                    ->where('dtAporte','>=',$dadosUltimoAporte[0]->dtAporte)
+                    ->sum('subTotal');
+
+                //soma quantidade de cotas totais aportadas e não resgatado, desde a data recuperada até a presente data                
+                $qtdeCotas = DB::table('aportes')
+                    ->select('qtde')
+                    ->where('cdUsuario',session()->get('autenticado.id_user'))
+                    ->where('cdPapel',$papeis[$i]->cdPapel)
+                    ->where('cdStatus',1)
+                    ->where('dtAporte','>=',$dadosUltimoAporte[0]->dtAporte)
+                    ->sum('qtde');
+
+                //soma valor total aportado e não resgatado, desde a data recuperada até a presente data                
+                $proventosPagos = DB::table('proventos')
+                    ->select('subTotal')
+                    ->where('cdUsuario',session()->get('autenticado.id_user'))
+                    ->where('cdPapel',$papeis[$i]->cdPapel)
+                    ->where('dtProvento','>=',$dadosUltimoAporte[0]->dtAporte)
+                    ->sum('subTotal');
+                $dYield = $proventosPagos / $totalAportado * 100;
+
+                //calcula posição atual do papel com base no valor da cotação multiplicado por cotas não resgatadas
+                $posicaoAtualPapel = $qtdeCotas * $papeis[$i]->cotacao;
+
+                //( Dividendos pagos ) + ( Valor de Posição Atual - Valor Total Aportado )
+                //calcula valoricação do papel
+                $valorizacaoReal        = $proventosPagos + ( $posicaoAtualPapel - $totalAportado );
+                $valorizacaoPercentual  = $valorizacaoReal / $totalAportado * 100;
+                
+                //alimenta $result para linhas da tabela
+                $resultPapel['papel']                    = $papeis[$i]->cdPapel." - ".$papeis[$i]->nmPapel;
+                $resultPapel['totalAportado']            = $totalAportado;
+                $resultPapel['qtdeCotas']                = $qtdeCotas;
+                $resultPapel['posicaoAtual']             = $posicaoAtualPapel;
+                $resultPapel['proventosPagos']           = $proventosPagos;
+                $resultPapel['dYield']                   = $dYield;
+                $resultPapel['valorizacaoReal']          = $valorizacaoReal;
+                $resultPapel['valorizacaoPercentual']    = $valorizacaoPercentual;
+                
+                $result[] = $resultPapel;
+                
+                //incrementa totais
+                $totais['qtdeCotas'] += $qtdeCotas;
+                $totais['totalAportado'] += $totalAportado;
+                $totais['posicaoAtual'] += $posicaoAtualPapel;
+                $totais['proventosPagos'] += $proventosPagos;
+                $totais['valorizacaoReal'] += $valorizacaoReal;
+
+                $registrosValidos += 1;
+
+            }
+
+        }
+ 
+        //atualiza dados médios em totais
+        $totais['dYield']                   = $totais['proventosPagos'] / $totais['totalAportado'] * 100;
+        $totais['valorizacaoPercentual']    = $totais['valorizacaoReal'] / $totais['totalAportado'] * 100;
+        
+        $data['proventos'] = $result;
+        $data['totais'] = $totais;
+
+        return view('proventos.papel')->with(['data'=>$data]);
+    }
+
+
+
 }

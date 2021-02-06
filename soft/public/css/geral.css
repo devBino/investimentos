@@ -16,10 +16,10 @@
 .text-cotacoes{
     width: 90px;
     border: none;
-    background-color: none;
+    background-color: transparent;
     font-size: 9pt;
     text-decoration: underline;
-    margin-top: -6px;
+    margin-top: -5px;
 }
 
 

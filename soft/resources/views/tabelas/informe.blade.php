@@ -36,7 +36,7 @@
         @if( isset( $data['lancamentos'] ) && count($data['lancamentos']) )
             @foreach( $data['lancamentos'] as $num => $val )
                 
-                <tr class="tr_informe">
+                <tr class="tr_informe tr_{{$num}}" data-dados="{{$val->descricao}}|{{date('d-m-Y',strtotime($val->dtInforme))}}|{{$simbolo.number_format($val->valor,2,',','.')}}">
 
                     <td>{{$val->descricao}}</td>
                     <td>{{ date('d-m-Y',strtotime($val->dtInforme)) }}</td>

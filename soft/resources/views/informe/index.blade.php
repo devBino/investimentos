@@ -22,7 +22,14 @@
                     <div class="row">
                         <div class="col-sm-6 form-group">
                             <label>Descrição</label>
-                            <input type="text" id="descricao" name="descricao" class="form-control form-control-sm" autofocus="true" required autocomplete="off">
+                            <select name="descricao" id="descricao" class="form-control form-control-sm" required>
+                                <option>Selecione</option>
+                                <option value="XP">XP</option>
+                                <option value="CLEAR">CLEAR</option>
+                                <option value="NUBANK">NUBANK</option>
+                                <option value="COFRE">COFRE</option>
+                                <option value="CAIXA ECO.">CAIXA ECO.</option>
+                            </select>
                         </div>
                         
                         <div class="col-sm-6 form-group">
@@ -60,12 +67,17 @@
 
                     <tbody>
                         <tr class="table-active">
-                            <td colspan=2> <center> <b>Ultimo Lançamento</b> </center></td>
+                            <td> 
+                                <center> <b>Ultimo Lançamento</b> </center>
+                            </td>
+                            <td><span class="btMoveInforme" data-move="1"><b><<</b></span> </td>
+                            <td><span class="btMoveInforme" data-move="-1"><b>>></b></span> </td>
+                            <input type="hidden" id="marcador" value="0">
                         </tr>
                         @foreach( $data['ultimoLancamento'] as $num => $val )
                             <tr>
-                                <td>{{$val->descricao}}</td>
-                                <td><center>R$ {{number_format($val->valor,2,',','.')}}</center></td>
+                                <td colspan=2 id="td_desc_{{$num}}">{{$val->descricao}}</td>
+                                <td  id="td_val_{{$num}}" class="totais"><center>R$ {{number_format($val->valor,2,',','.')}}</center></td>
                             </tr>
                             
                             @php $valorTotal += $val->valor; @endphp
@@ -73,8 +85,8 @@
                         @endforeach
                         
                         <tr class="table-active">
-                            <th>Total</th>
-                            <td>
+                            <th colspan=2>Total</th>
+                            <td id="td_total">
                                 <center>R$ {{number_format($valorTotal,2,',','.')}}</center>
                             </td>
                         </tr>
@@ -97,7 +109,8 @@
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
             <script type="text/javascript">
-                google.charts.load('current', {'packages':['bar']});
+                
+                google.charts.load('current', {'packages':['corechart']});
                 google.charts.setOnLoadCallback(drawChart);
 
                 function drawChart() {
@@ -105,23 +118,20 @@
                         ['Data', 'Valor'],
                         
                         @foreach($data['agrupamento'] as $num => $val)
-                            ["{{date('d-m-Y',strtotime($val->dtInforme))}}",{{$val->valor}}],
+                            ["{{date('d-m-Y',strtotime($val->dtInforme))}}",{{ number_format($val->valor,2,'','.')}}],
                         @endforeach
                         
                     ]);
 
                     var options = {
-                        chart: {
-                            title: 'Evolução Patrimonio'
-                        },
-                        legend:{
-                            position: 'none'
-                        }
+                        title: 'Evolução Patrimonial',
+                        curveType: 'function',
+                        legend: { position: 'none' }
                     };
 
-                    var chart = new google.charts.Bar(document.getElementById('divInforme'));
-                    
-                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                    var chart = new google.visualization.LineChart(document.getElementById('divInforme'));
+                    chart.draw(data, options);
+
                 }
             </script>
         @endif

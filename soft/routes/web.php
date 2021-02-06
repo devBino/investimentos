@@ -55,6 +55,8 @@ Route::post('/provento-pesquisar','Provento@pesquisar')->middleware(['IsOk']);
 //PROVENTOS MENSAIS
 Route::get('/provento-mensal','Provento@proventosMensais')->middleware(['IsOk']);
 Route::post('/provento-mensal','Provento@proventosMensais')->middleware(['IsOk']);
+Route::get('/provento-papel','Provento@proventosPapeis')->middleware(['IsOk']);
+Route::post('/provento-papel','Provento@proventosPapeis')->middleware(['IsOk']);
 
 //DASHBOARD
 Route::get('/dashboard','Dashboard@index')->middleware(['IsOk']);

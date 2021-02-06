@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <table class="table table-sm table-bordered" style="margin-top:-25px;">
+            <table class="table table-sm table-bordered table-striped" style="margin-top:-25px;">
                 <thead>
                     <tr class="table-active">
                         <th>Papel</th>
