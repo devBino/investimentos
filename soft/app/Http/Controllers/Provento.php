@@ -133,6 +133,7 @@ class Provento{
         $totais['totalAportado']            = 0;
         $totais['qtdeCotas']                = 0;
         $totais['posicaoAtual']             = 0;
+        $totais['variacaoAntesProventos']   = 0;
         $totais['proventosPagos']           = 0;
         $totais['dYield']                   = 0;
         $totais['valorizacaoReal']          = 0;
@@ -164,9 +165,9 @@ class Provento{
                     ->where('cdStatus',1)
                     ->limit(1)
                     ->get();
-
+                
                 //caso nunca tenha aportado no papel
-                if( !count($dadosUltimoAporte) ){
+                if( !count($dadosUltimoAporte) || !isset($dadosUltimoAporte[0]->dtAporte) ){
                     continue;
                 }
 
@@ -199,6 +200,7 @@ class Provento{
 
                 //calcula posição atual do papel com base no valor da cotação multiplicado por cotas não resgatadas
                 $posicaoAtualPapel = $qtdeCotas * $papeis[$i]->cotacao;
+                $variacaoAntesProventos = $posicaoAtualPapel - $totalAportado;
 
                 //( Dividendos pagos ) + ( Valor de Posição Atual - Valor Total Aportado )
                 //calcula valoricação do papel
@@ -210,6 +212,7 @@ class Provento{
                 $resultPapel['totalAportado']            = $totalAportado;
                 $resultPapel['qtdeCotas']                = $qtdeCotas;
                 $resultPapel['posicaoAtual']             = $posicaoAtualPapel;
+                $resultPapel['variacaoAntesProventos']   = $variacaoAntesProventos;
                 $resultPapel['proventosPagos']           = $proventosPagos;
                 $resultPapel['dYield']                   = $dYield;
                 $resultPapel['valorizacaoReal']          = $valorizacaoReal;
@@ -221,6 +224,7 @@ class Provento{
                 $totais['qtdeCotas'] += $qtdeCotas;
                 $totais['totalAportado'] += $totalAportado;
                 $totais['posicaoAtual'] += $posicaoAtualPapel;
+                $totais['variacaoAntesProventos'] += $variacaoAntesProventos;
                 $totais['proventosPagos'] += $proventosPagos;
                 $totais['valorizacaoReal'] += $valorizacaoReal;
 
@@ -231,8 +235,15 @@ class Provento{
         }
  
         //atualiza dados médios em totais
-        $totais['dYield']                   = $totais['proventosPagos'] / $totais['totalAportado'] * 100;
-        $totais['valorizacaoPercentual']    = $totais['valorizacaoReal'] / $totais['totalAportado'] * 100;
+        if( $totais['proventosPagos'] > 0 && $totais['totalAportado'] > 0 && $totais['valorizacaoReal'] > 0 ){
+            $totais['dYield']                   = $totais['proventosPagos'] / $totais['totalAportado'] * 100;
+            $totais['valorizacaoPercentual']    = $totais['valorizacaoReal'] / $totais['totalAportado'] * 100;
+        }
+
+        //calcula percentual da posição de cada papel em relação a posição geral
+        for($i=0;$i<count($result);$i++){
+            $result[$i]['percentualPosicao'] = $result[$i]['posicaoAtual'] / $totais['posicaoAtual'] * 100;
+        }
         
         $data['proventos'] = $result;
         $data['totais'] = $totais;

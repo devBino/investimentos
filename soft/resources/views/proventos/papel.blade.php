@@ -88,6 +88,8 @@
                         <th>Total Cotas</th>
                         <th>Total Aportado</th>
                         <th>Posição Atual</th>
+                        <th>% da Carteira</th>
+                        <th>Variação</th>
                         <th>Proventos</th>
                         <th>D. Yield</th>
                         <th>Valorização Real</th>
@@ -102,6 +104,8 @@
                                 <td>{{$val['qtdeCotas']}}</td>
                                 <td>R$ {{number_format($val['totalAportado'],2,',','.')}}</td>
                                 <td>R$ {{number_format($val['posicaoAtual'],2,',','.')}}</td>
+                                <td>{{number_format($val['percentualPosicao'],2,',','.')}} %</td>
+                                <td>R$ {{number_format($val['variacaoAntesProventos'],2,',','.')}}</td>
                                 <td>R$ {{number_format($val['proventosPagos'],2,',','.')}}</td>
                                 <td>{{number_format($val['dYield'],2,',','.')}}</td>
                                 <td>R$ {{number_format($val['valorizacaoReal'],2,',','.')}}</td>
@@ -122,6 +126,8 @@
                             <th>{{$data['totais']['qtdeCotas']}}</th>
                             <th>R$ {{number_format($data['totais']['totalAportado'],2,',','.')}}</th>
                             <th>R$ {{number_format($data['totais']['posicaoAtual'],2,',','.')}}</th>
+                            <th>100,00 %</th>
+                            <th>R$ {{number_format($data['totais']['variacaoAntesProventos'],2,',','.')}}</th>
                             <th>R$ {{number_format($data['totais']['proventosPagos'],2,',','.')}}</th>
                             <th>{{number_format($data['totais']['dYield'],2,',','.')}}</th>
                             <th>R$ {{number_format($data['totais']['valorizacaoReal'],2,',','.')}}</th>

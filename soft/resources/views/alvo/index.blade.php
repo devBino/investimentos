@@ -123,7 +123,13 @@
                         @foreach( $data['listagem'] as $num => $val )
                             
                             <tr class="tr_alvo">
-                                <td>{{$val['nmPapel']}}</td>
+                            
+                                @if( date('Y-m-d',strtotime($val['atualizacaoDiaria'])) == date('Y-m-d',time()) )
+                                    <td><span class="text text-success">{{$val['nmPapel']}}</span></td>
+                                @else
+                                    <td><span class="text text-danger">{{$val['nmPapel']}}</span></td>
+                                @endif
+
                                 <td>{{$val['ativo']}}</td>
                                 <td>R$ {{number_format($val['precoMedio'],2,',','.')}}</td>
                                 <td>R$ {{number_format($val['precoAlvo'],2,',','.')}}</td>

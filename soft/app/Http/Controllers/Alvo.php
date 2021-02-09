@@ -104,6 +104,14 @@ class Alvo{
                 ->limit('1')
                 ->get();
 
+            $dadosAtualizacaoDiaria = DB::table('historicoCotacoes')
+                ->select('dtCotacao')
+                ->where('cdUsuario',session()->get('autenticado.id_user'))
+                ->where('cdPapel',$val->cdPapel)
+                ->orderBy('dtCotacao','desc')
+                ->limit(1)
+                ->get();
+            
             $ultimoAporte = "Nunca";
 
             if( count($dadosUltimoAporte) ){
@@ -144,6 +152,7 @@ class Alvo{
                 $dadosAlvoAporte['ativo']       = unserialize(Redis::get('sub_tipo_papel'))[$val->subTipo];
                 $dadosAlvoAporte['ultimaOco']   = $ultimoAporte;
                 $dadosAlvoAporte['comparaPrecoMedioCotacao']    = $dadosAlvoAporte['precoMedio'] - $dadosAlvoAporte['cotacao'];
+                $dadosAlvoAporte['atualizacaoDiaria'] = count($dadosAtualizacaoDiaria) ? $dadosAtualizacaoDiaria[0]->dtCotacao : 0;
                 $return[] = $dadosAlvoAporte;
             }
 
@@ -159,6 +168,7 @@ class Alvo{
                 $dadosAlvoResgate['ativo']      = unserialize(Redis::get('sub_tipo_papel'))[$val->subTipo];
                 $dadosAlvoResgate['ultimaOco']  = "-";
                 $dadosAlvoResgate['comparaPrecoMedioCotacao']    = $dadosAlvoResgate['precoMedio'] - $dadosAlvoResgate['cotacao'];
+                $dadosAlvoResgate['atualizacaoDiaria'] = count($dadosAtualizacaoDiaria) ? $dadosAtualizacaoDiaria[0]->dtCotacao : 0;
                 $return[] = $dadosAlvoResgate;
             }
 
