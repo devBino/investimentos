@@ -384,5 +384,7 @@ th{
 }
 
 @media screen and (min-width: 1200px) {
-    
+    .menu-lateral{
+        height: 1800px;
+    }
 }
