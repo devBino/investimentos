@@ -1,7 +1,9 @@
 $(function(){
     
-    $('#descricao').keyup(function(){
-        $('#descricao').val( $('#descricao').val().toUpperCase() )
+    $('#descricao').change(function(){
+        setTimeout(function(){
+            $('#valor').focus()
+        },300)
     })
 
     $('.deleta').click(function(){

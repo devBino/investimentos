@@ -162,17 +162,17 @@
 
                 function drawChart() {
                     var data = google.visualization.arrayToDataTable([
-                        ['Papel', 'Posição'],
+                        ['Papel', 'Aportado','Posição Atual','Proventos'],
                         
                         @foreach($data['proventos'] as $num => $val)
-                            ["{{$val['papel']}}",{{$val['percentualPosicao']}}],
+                            ["{{$val['papel']}}",{{$val['totalAportado']}},{{$val['posicaoAtual']}},{{$val['proventosPagos']}}],
                         @endforeach
                         
                     ]);
 
                     var options = {
                         chart: {
-                            title: 'Distribuição de Papeis em Carteira'
+                            title: 'Distribuição de Proventos por Papel'
                         },
                         legend:{
                             position: 'none'

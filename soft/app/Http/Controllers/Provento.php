@@ -96,6 +96,8 @@ class Provento{
             //filtros
             if( isset($params['ano']) ){
                 $totalProventosMes = $totalProventosMes->whereYear('p.dtProvento',$params['ano'] );
+            }else{
+                $totalProventosMes = $totalProventosMes->whereYear('p.dtProvento', date('Y',time()) );
             }
 
             $totalProventosMes = $totalProventosMes->whereMonth('p.dtProvento',$mes);
@@ -235,7 +237,12 @@ class Provento{
         }
  
         //atualiza dados médios em totais
-        if( $totais['proventosPagos'] > 0 && $totais['totalAportado'] > 0 && $totais['valorizacaoReal'] > 0 ){
+        if( 
+            ($totais['totalAportado'] > 0 && ($totais['proventosPagos'] >= 0 || $totais['valorizacaoReal'] > 0) )
+            ||
+            ($totais['totalAportado'] > 0 && ($totais['proventosPagos'] >= 0 || $totais['valorizacaoReal'] < 0) )
+        )
+        {
             $totais['dYield']                   = $totais['proventosPagos'] / $totais['totalAportado'] * 100;
             $totais['valorizacaoPercentual']    = $totais['valorizacaoReal'] / $totais['totalAportado'] * 100;
         }

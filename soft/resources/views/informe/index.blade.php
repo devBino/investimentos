@@ -40,7 +40,7 @@
                     <div class="row">
                         <div class="col-sm-6 form-group">
                             <label>Data</label>
-                            <input type="date" name="dataInforme" id="dataInforme" class="form-control form-control-sm">
+                            <input type="date" name="dataInforme" id="dataInforme" class="form-control form-control-sm" value="{{date('Y-m-d',time())}}">
                         </div>
 
                         <div class="col-sm-6 justify-content-start">
