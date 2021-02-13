@@ -149,6 +149,55 @@
 </div>
 
 
+
+
+<div class="row">
+    
+    <div class="col-sm-12">
+        
+        @if( isset($data['proventos']) && count($data['proventos']) > 0 )
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+            <script type="text/javascript">
+                google.charts.load('current', {'packages':['bar']});
+                google.charts.setOnLoadCallback(drawChart);
+
+                function drawChart() {
+                    var data = google.visualization.arrayToDataTable([
+                        ['Papel', 'Posição'],
+                        
+                        @foreach($data['proventos'] as $num => $val)
+                            [ "{{$val['papel']}}",{{$val['percentualPosicao']}} ],
+                        @endforeach
+                        
+                    ]);
+
+                    var options = {
+                        chart: {
+                            title: 'Distribuição Papeis na Carteira'
+                        },
+                        legend:{
+                            position: 'none'
+                        }
+                    };
+
+                    var chart = new google.charts.Bar(document.getElementById('divPapeis'));
+                    
+                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                }
+            </script>
+        @endif
+
+        <div class="borda">
+            <div id="divPapeis" style="width:100%;height:350px;"></div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
 <div class="row">
     
     <div class="col-sm-12">
