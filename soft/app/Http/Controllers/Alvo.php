@@ -17,13 +17,7 @@ class Alvo{
 
     public function index(){
         
-        $listaPapeis = DB::table('papel')
-            ->select()
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->orderBy('cdTipo','asc')
-            ->orderBy('subTipo','asc')
-            ->orderBy('nmPapel','asc')
-            ->get();
+        $listaPapeis = PAP::getPapeisRendaVariavel();
 
         $papeis = [
             'papeis'=>$listaPapeis,

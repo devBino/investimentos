@@ -25,6 +25,19 @@ class Papel{
         return $papeis;
     }
 
+    public static function getPapeisRendaVariavel(){
+        $papeis = DB::table('papel')
+            ->select()
+            ->where('cdUsuario',session()->get('autenticado.id_user'))
+            ->where('cdTipo',2)
+            ->orderBy('cdTipo','asc')
+            ->orderBy('subTipo','asc')
+            ->orderBy('nmPapel','asc')
+            ->get();
+
+        return $papeis;
+    }
+
     public static function getContagemPapeis($params=[]){
             
         $papeis = DB::table('papel')

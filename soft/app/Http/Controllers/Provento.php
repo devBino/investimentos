@@ -15,7 +15,7 @@ class Provento{
 
     public function index(){
         
-        $data['papeis']         = PAP::getPapeis();
+        $data['papeis']         = PAP::getPapeisRendaVariavel();
         $data['proventos']      = MOV::getProventos();
         $data['totalProventos'] = MOV::getTotalProventos();
         
@@ -82,7 +82,7 @@ class Provento{
         $params = $request->all();
         $data = [];
 
-        $data['papeis']         = PAP::getPapeis();
+        $data['papeis']         = PAP::getPapeisRendaVariavel();
 
         for($i=1;$i<=12;$i++){
             
@@ -127,7 +127,7 @@ class Provento{
         $params = $request->all();
 
         //buscando papeis, inicia variavel $data que será passada pra view
-        $data['papeis']         = PAP::getPapeis();
+        $data['papeis']         = PAP::getPapeisRendaVariavel();
         $papeis = $data['papeis'];
 
         //array delimita Ações e FIIs que tem cdTipo 2
