@@ -161,7 +161,7 @@ class Provento{
                 }
 
                 //subtipo
-                if( isset($params['subTipo']) && $papeis[$i]->subTipo != $params['subTipo'] ){
+                if( isset($params['subTipo']) && !in_array($papeis[$i]->subTipo, $params['subTipo']) ){
                     continue;
                 }
 

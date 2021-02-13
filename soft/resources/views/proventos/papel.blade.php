@@ -31,7 +31,7 @@
 
                     <div class="row">
                         
-                        <div class="col-sm-8 form-group">
+                        <div class="col-sm-7 form-group">
                             <label>Papel</label>
                             <select name="papel[]" id="papel" class="form-control form-control-sm" multiple="multiple">
                                 <option></option>
@@ -45,9 +45,9 @@
                             </select>
                         </div>
                     
-                        <div class="col-sm-3 form-group">
+                        <div class="col-sm-4 form-group">
                             <label>Sub Tipo</label>
-                            <select name="subTipo" id="subTipo" class="form-control form-control-sm">
+                            <select name="subTipo[]" id="subTipo" class="form-control form-control-sm" multiple="multiple">
                                 <option></option>
                                 
                                 <option value="2">{{ session()->get('autenticado')['sub_tipo'][2] }}</option>
@@ -57,8 +57,8 @@
 
                         <div class="col-sm-1 justify-content-start">
                             <div class="btn-group">
-                                <button class="btn btn-info btn-sm mt-4 pt-2"><i class="fas fa-search pb-1"></i></button>
-                                <span class="btn btn-info btn-sm mt-4 pt-2 limpar_form"><i class="fas fa-eraser pb-1"></i></span>
+                                <button class="btn btn-info btn-sm mt-4 pt-2 pb-2"><i class="fas fa-search pb-1"></i></button>
+                                <span class="btn btn-info btn-sm mt-4 pt-2 pb-2 limpar_form"><i class="fas fa-eraser pb-1"></i></span>
                             </div>
                         </div>
 
