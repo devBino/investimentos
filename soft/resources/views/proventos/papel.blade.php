@@ -31,9 +31,9 @@
 
                     <div class="row">
                         
-                        <div class="col-sm-3 form-group">
+                        <div class="col-sm-8 form-group">
                             <label>Papel</label>
-                            <select name="papel" id="papel" class="form-control form-control-sm">
+                            <select name="papel[]" id="papel" class="form-control form-control-sm" multiple="multiple">
                                 <option></option>
                                 
                                 @if( isset($data['papeis']) && count($data['papeis']) )
@@ -62,9 +62,6 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-5 form-group">
-                            
-                        </div>                        
                     </div>
 
                 </fieldset>

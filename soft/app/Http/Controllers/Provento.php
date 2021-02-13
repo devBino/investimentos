@@ -123,13 +123,17 @@ class Provento{
 
     public function proventosPapeis(Request $request){
         
+        //recupera parametros da requisição
         $params = $request->all();
-        
 
+        //buscando papeis, inicia variavel $data que será passada pra view
         $data['papeis']         = PAP::getPapeis();
-
         $papeis = $data['papeis'];
+
+        //array delimita Ações e FIIs que tem cdTipo 2
         $tiposPapeisPagadoresProventos = [2];
+
+        //inicia arrays auxiliares, $result e $totais
         $result = [];
         
         $totais['totalAportado']            = 0;
@@ -143,13 +147,16 @@ class Provento{
 
         $registrosValidos = 0;
 
+        //percorre os papeis fazendo os calculos
         for( $i=0; $i<count($papeis); $i++ ){
+
+            //caso o papel seja uma Ação ou FII
             if( in_array($papeis[$i]->cdTipo,$tiposPapeisPagadoresProventos) ){
 
                 //verifica se foram recebidos filtros do formulário
                 
                 //papel
-                if( isset($params['papel']) && $papeis[$i]->cdPapel != $params['papel'] ){
+                if( isset($params['papel']) && !in_array( $papeis[$i]->cdPapel,$params['papel'] ) ){
                     continue;
                 }
 
@@ -173,7 +180,7 @@ class Provento{
                     continue;
                 }
 
-                //soma valor total aportado e não resgatado, desde a data recuperada até a presente data                
+                //soma valor total aportado e não resgatado, desde a data do aporte mais antigo não resgatado, até a presente data
                 $totalAportado = DB::table('aportes')
                     ->select('subTotal')
                     ->where('cdUsuario',session()->get('autenticado.id_user'))
@@ -182,7 +189,7 @@ class Provento{
                     ->where('dtAporte','>=',$dadosUltimoAporte[0]->dtAporte)
                     ->sum('subTotal');
 
-                //soma quantidade de cotas totais aportadas e não resgatado, desde a data recuperada até a presente data                
+                //soma quantidade de cotas totais aportadas e não resgatado, desde a data do aporte mais antigo não resgatado, até a presente data
                 $qtdeCotas = DB::table('aportes')
                     ->select('qtde')
                     ->where('cdUsuario',session()->get('autenticado.id_user'))
