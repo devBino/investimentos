@@ -40,13 +40,13 @@ class Cotacao{
 
             curl_close($curl);
             
-            $dadosReponse = json_decode($response,true);
+            $dadosResponse = json_decode($response,true);
 
-            if ( isset($dadosReponse['results'][strtoupper($codAcao)]['error']) && $dadosReponse['results'][strtoupper($codAcao)]['error']  == true ) {
+            if ( isset($dadosResponse['results'][strtoupper($codAcao)]['error']) && $dadosResponse['results'][strtoupper($codAcao)]['error']  == true ) {
                 $cotacaoAlternativa = self::getCotacaoAlternativa($codAcao);
                 $return = ['valor'=>$cotacaoAlternativa['valor']];
             }else{     
-                $valorCotacao = $dadosReponse['results'][strtoupper($codAcao)]['price'];
+                $valorCotacao = $dadosResponse['results'][strtoupper($codAcao)]['price'];
                 $return = ['valor'=>$valorCotacao];
             }
 
@@ -129,7 +129,7 @@ class Cotacao{
     /**
      * @author Fernando Bino
      * @description recupera dados da taxa selic e cdi
-     * @return array $dadosReponse
+     * @return array $dadosResponse
     */
     public static function getTaxaSelicCdi(){
         $url = "https://api.hgbrasil.com/finance/taxes?key=".getenv('API_HGBRASIL');
@@ -154,9 +154,9 @@ class Cotacao{
 
         curl_close($curl);
         
-        $dadosReponse = json_decode($response,true);
+        $dadosResponse = json_decode($response,true);
 
-        return $dadosReponse;
+        return $dadosResponse;
     }
 
     /**

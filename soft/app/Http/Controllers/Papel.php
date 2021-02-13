@@ -174,12 +174,19 @@ class Papel{
 
             if( strpos($tipoPapel,"RENDA VAR") !== false ){
             
-                $nomeAtivo = substr($papeis[$i]->nmPapel,0,5);
-                        
-                if( strlen( preg_replace('/[^0-9]/','',$papeis[$i]->nmPapel) ) == 1 ){                    
+                $nomeAtivo = $papeis[$i]->nmPapel;
+
+                //retira o F do final, pro caso de ações fracionadas
+                if( strtoupper( substr($nomeAtivo,strlen($nomeAtivo) - 1) ) == 'F' ){
+                    $nomeAtivo = substr($papeis[$i]->nmPapel,0,strlen($nomeAtivo) - 1);
+                }
+
+                //caso papel seja uma ação
+                if( $papeis[$i]->subTipo == 3 ){
                     $dadosCotacao = COT::getCotacao( $nomeAtivo );
-                }else{                
-                    $dadosCotacao = COT::getCotacaoFII( $papeis[$i]->nmPapel );
+                //caso papel seja um fundo imobiliario
+                }else if( $papeis[$i]->subTipo == 2 ){
+                    $dadosCotacao = COT::getCotacaoFII( $nomeAtivo );
                 }
 
                 /**
