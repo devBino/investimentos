@@ -1,5 +1,6 @@
 @php
     $simbolo = "R$ ";
+    $displayTr = 'none';
 @endphp
 
 @if( isset($data['flagRelatorio']) )
@@ -11,6 +12,7 @@
 
     @php
         $simbolo = "";
+        $displayTr = 'block';
     @endphp
 @endif
 
@@ -54,7 +56,7 @@
                     $lucroTotal     += $val->rentabilidade;
                 @endphp
 
-                <tr class="tr_resgate" style="display:none;">
+                <tr class="tr_resgate" style="display:{{$displayTr}};">
 
                     <td>{{$val->nmPapel}}</td>
                     <td>{{ session()->get('autenticado')['tipo_papel'][$val->cdTipo] }}</td>

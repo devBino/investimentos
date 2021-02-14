@@ -1,5 +1,6 @@
 @php
     $simbolo = "R$ ";
+    $displayTr = 'none';
 @endphp
 
 @if( isset($data['flagRelatorio']) )
@@ -11,6 +12,7 @@
 
     @php
         $simbolo = "";
+        $displayTr = 'block';
     @endphp
 @endif
 
@@ -56,7 +58,7 @@
                     @endphp
                 @endif
 
-                <tr class="tr_caixa" style="display:none;">
+                <tr class="tr_caixa" style="display:{{$displayTr}};">
 
                     <td>{{$val->descricao}}</td>
                     <td>{{ date('d-m-Y H:i:s',strtotime($val->dtLancamento)) }}</td>
