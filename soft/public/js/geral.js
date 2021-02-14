@@ -206,7 +206,7 @@ function msgAlert(msg = 'Erro ao tentar concluir ação...', tipoClass = 'div-da
 }
 
 function recebePrompt(msgChamada = 'Por favor, informe um valor: '){
-    txtInput = ''
+    var txtInput = ''
 
     try{
         while( strNuloOuVazio(txtInput) ){
@@ -217,4 +217,27 @@ function recebePrompt(msgChamada = 'Por favor, informe um valor: '){
     }
 
     return txtInput
+}
+
+function formatCurrency( strNumber ){
+
+    var strFormat = 'R$ 0,00'   
+
+    try{
+        const formatter = new Intl.NumberFormat(
+            'pt-BR',
+            {
+                style:'currency',
+                currency:'BRL'
+            }
+        )
+        
+        strFormat = formatter.format(strNumber)
+
+    }catch(e){
+        console.error(e)
+    }
+
+    return strFormat
+
 }

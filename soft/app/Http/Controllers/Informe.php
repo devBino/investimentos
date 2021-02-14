@@ -44,6 +44,7 @@ class Informe{
             ->get();
 
         $data['lancamentos']        = $lancamentos;
+        $data['marcador']           = count($data['lancamentos']) / 5;
         $data['agrupamento']        = $agrupamentos;
         $data['ultimoLancamento']   = $ultimoLancamento;
 

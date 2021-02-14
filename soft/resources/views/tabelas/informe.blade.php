@@ -34,9 +34,22 @@
     <tbody>
         
         @if( isset( $data['lancamentos'] ) && count($data['lancamentos']) )
+            
+            @php
+                $dataLinha = $data['lancamentos'][0]->dtInforme;
+                $linhaGrupo = 1;
+            @endphp
+
             @foreach( $data['lancamentos'] as $num => $val )
                 
-                <tr class="tr_informe tr_{{$num}}" data-dados="{{$val->descricao}}|{{date('d-m-Y',strtotime($val->dtInforme))}}|{{$simbolo.number_format($val->valor,2,',','.')}}">
+                @php
+                    if( $val->dtInforme != $dataLinha ){
+                        $dataLinha = $val->dtInforme;
+                        $linhaGrupo += 1;
+                    }
+                @endphp
+
+                <tr class="tr_informe linha_grupo_{{$linhaGrupo}}" data-dados="{{$val->descricao}}|{{date('d-m-Y',strtotime($val->dtInforme))}}|{{$simbolo.number_format($val->valor,2,',','.')}}">
 
                     <td>{{$val->descricao}}</td>
                     <td>{{ date('d-m-Y',strtotime($val->dtInforme)) }}</td>

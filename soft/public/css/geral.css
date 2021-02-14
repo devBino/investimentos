@@ -122,7 +122,10 @@ form .bt-form{
     width: calc(100% + 15px) !important;
     margin-left: -5px !important;
 }
-
+.bt-move-informe{
+    height: 22px;
+    font-size: 10pt;
+}
 
 
 

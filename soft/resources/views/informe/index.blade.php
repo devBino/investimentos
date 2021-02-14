@@ -67,12 +67,12 @@
 
                     <tbody>
                         <tr class="table-active">
-                            <td> 
+                            <td colspan=3> 
                                 <center> <b>Ultimo Lançamento</b> </center>
                             </td>
-                            <td><span class="btMoveInforme" data-move="1"><b><<</b></span> </td>
-                            <td><span class="btMoveInforme" data-move="-1"><b>>></b></span> </td>
-                            <input type="hidden" id="marcador" value="0">
+                            
+                            <input type="hidden" id="marcador" value="{{$data['marcador']}}">
+                            <input type="hidden" id="marcadorFixo" value="{{$data['marcador']}}">
                         </tr>
                         @foreach( $data['ultimoLancamento'] as $num => $val )
                             <tr>
@@ -96,6 +96,23 @@
                 @endif
                 
             </table>
+
+            <div class="row mt-0">
+                <div class="col-sm-9">
+                    @if( isset($data['ultimoLancamento']) && count($data['ultimoLancamento']) )
+                        <h6 class="text text-secondary" id="h3-move-informe"><i> Data: {{ date('d-m-Y',strtotime( $data['ultimoLancamento'][0]->dtInforme )) }} </i></h6>
+                    @else
+                        <h6 class="text text-secondary" id="h3-move-informe"><i>Sem Lançamentos Informados...</i></h6>
+                    @endif
+                </div>
+                <div class="col-sm-3">
+                    <div class="btn-group ml-4">
+                        <button class="bt-move-informe" data-move="-1"> <b> << </b> </button>
+                        <button class="bt-move-informe" data-move="1"> <b> >> </b> </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
         
     </div>
