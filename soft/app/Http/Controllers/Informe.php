@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Repositories\CRUD as CRUD_DB;
 use Illuminate\Http\Request;
 use App\Http\Repositories\ExportData as EXPDATA;
+use App\Http\Repositories\Informe as INFO;
 use DB;
 
 class Informe{
@@ -14,42 +15,12 @@ class Informe{
     }
 
     public function index(){
+        return view('informe.index')->with(['data'=>INFO::getDadosInforme()]);
+    }
 
-        $lancamentos = DB::table('informe')
-            ->select()
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->orderBy('cdInforme','desc')
-            ->get();
-        
-        $agrupamentos = DB::table('informe')
-            ->select(
-                'dtInforme',
-                DB::raw('sum(valor) as valor')
-            )
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->groupBy('dtInforme')
-            ->get();
-
-        $tiposLocais = DB::table('informe')
-            ->select('descricao')
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->distinct('descricao')
-            ->get();
-        
-        $ultimoLancamento = DB::table('informe')
-            ->select()
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->orderBy('dtInforme','desc')
-            ->limit( count($tiposLocais) )
-            ->get();
-
-        $data['lancamentos']        = $lancamentos;
-        $data['marcador']           = count($data['lancamentos']) / 5;
-        $data['agrupamento']        = $agrupamentos;
-        $data['ultimoLancamento']   = $ultimoLancamento;
-
-        return view('informe.index')->with(['data'=>$data]);
-        
+    public function pesquisarHistoricoInforme(Request $request){
+        $html = view('graficos.informe')->with(['data'=>INFO::getDadosInforme( $request->all() )])->render();
+        return response(['html'=>$html])->header('Content-Type','application/json');
     }
 
     public function pesquisar(Request $request,$flagExportar=false){

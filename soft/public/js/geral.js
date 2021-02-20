@@ -50,6 +50,30 @@ function send_ajax(url=null, type=null, data=null, callback=null){
     }catch(e){}
 }
 
+function promiseAjax(url=null, type=null, data=null){
+    return new Promise((resolve,reject)=>{
+        try{
+            if( url !== null && type !== null && data !== null ){
+                $.ajax({
+                    url:url,
+                    type:type,
+                    data:data,
+                    success:function(result){
+                        resolve({data:result})
+                    },
+                    error(e){
+                        reject({data:undefined, error:true})
+                    }
+                })
+            }else{
+                reject({data:undefined,error:false})
+            }
+        }catch(e){
+            reject({data:undefined,error:true})
+        }
+    })
+}
+
 function selectTodos(id, eventoChange = true){
     try{
         var options = $(`#${id} option`)

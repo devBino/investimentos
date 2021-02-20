@@ -67,3 +67,4 @@ Route::post('/dashboard-permissao-valores','Dashboard@permissaoValores')->middle
 Route::get('/informe','Informe@index')->middleware(['IsOk']);
 Route::post('/informe-salvar','Informe@salvar')->middleware(['IsOk']);
 Route::get('/informe-deletar/{id}','Informe@deletar')->middleware(['IsOk']);
+Route::post('/informe-busca-dados','Informe@pesquisarHistoricoInforme')->middleware(['IsOk']);

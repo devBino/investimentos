@@ -56,6 +56,27 @@ function marcadorMenosMenos(){
     percorreRowsLancamentos(marcador)
 }
 
+async function pesquisarHistoricoInforme( data ){
+    try{
+        
+        var params = {
+            _token:$('#tkn').val(),
+            data:data
+        }
+
+        var dadosHistorico = await promiseAjax('/informe-busca-dados','post',params)
+        
+        if( dadosHistorico.data === undefined || dadosHistorico.error ){
+            msgAlert('Ocorreu um erro ao tentar buscar os dados...')
+        }
+        
+        $('#containerGrafico').html(dadosHistorico.data.html)
+
+    }catch(e){
+        console.error(e)
+    }
+}
+
 function percorreRowsLancamentos(marcador){
     
     try{
@@ -75,6 +96,7 @@ function percorreRowsLancamentos(marcador){
         
             if( !setouData ){
                 $('#h3-move-informe').html(`<i>Data: ${arrDados[1]}</i>`)
+                pesquisarHistoricoInforme( arrDados[1] )
                 setouData = true
             }
 
