@@ -156,7 +156,7 @@
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
             <script type="text/javascript">
-                google.charts.load('current', {'packages':['bar']});
+                google.charts.load('current', {'packages':['corechart']});
                 google.charts.setOnLoadCallback(drawChart);
 
                 function drawChart() {
@@ -169,18 +169,17 @@
                         
                     ]);
 
+                    var view = new google.visualization.DataView(data);
+
                     var options = {
-                        chart: {
-                            title: 'Distribuição Papeis na Carteira'
-                        },
+                        title: 'Distribuição Papeis na Carteira',
                         legend:{
                             position: 'none'
                         }
                     };
 
-                    var chart = new google.charts.Bar(document.getElementById('divPapeis'));
-                    
-                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                    var chart = new google.visualization.ColumnChart(document.getElementById("divPapeis"));
+                    chart.draw(view, options);
                 }
             </script>
         @endif
@@ -203,31 +202,30 @@
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
             <script type="text/javascript">
-                google.charts.load('current', {'packages':['bar']});
+                google.charts.load('current', {'packages':['corechart']});
                 google.charts.setOnLoadCallback(drawChart);
 
                 function drawChart() {
                     var data = google.visualization.arrayToDataTable([
-                        ['Papel', 'Aportado','Posição Atual','Proventos'],
+                        ['Papel', 'Aportado',{ role: "style" },'Posição Atual',{ role: "style" },'Proventos',{ role: "style" }],
                         
                         @foreach($data['proventos'] as $num => $val)
-                            ["{{$val['papel']}}",{{$val['totalAportado']}},{{$val['posicaoAtual']}},{{$val['proventosPagos']}}],
+                            ["{{$val['papel']}}",{{$val['totalAportado']}},'#FE642E',{{$val['posicaoAtual']}},'#2E9AFE',{{$val['proventosPagos']}},'#2EFE64'],
                         @endforeach
                         
                     ]);
 
+                    var view = new google.visualization.DataView(data);
+
                     var options = {
-                        chart: {
-                            title: 'Distribuição de Proventos por Papel'
-                        },
+                        title: 'Distribuição de Proventos por Papel',
                         legend:{
                             position: 'none'
                         }
                     };
 
-                    var chart = new google.charts.Bar(document.getElementById('divProventos'));
-                    
-                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                    var chart = new google.visualization.ColumnChart(document.getElementById("divProventos"));
+                    chart.draw(view, options);
                 }
             </script>
         @endif
