@@ -9,7 +9,9 @@
 	z-index:11;
 	height:100%;
 }
-
+#containerBtMoves{
+    margin-left: -10px;
+}
 
 
 /*CLASSES DE INPUTS*/
@@ -22,7 +24,16 @@
     margin-top: -5px;
 }
 
+/*IDS DE INPUTS*/
+#velocidade{
+    margin-top: -10px;
+    height: 12px;
+}
 
+/*H1,H2,H3 usados para informar dados*/
+#h3-move-informe{
+    font-size: 11pt;
+}
 
 
 
@@ -123,8 +134,13 @@ form .bt-form{
     margin-left: -5px !important;
 }
 .bt-move-informe{
-    height: 22px;
-    font-size: 10pt;
+    font-size: 16pt;
+    background-color: transparent;
+    margin-top: -8px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    border: none;
 }
 
 
@@ -141,6 +157,9 @@ form .bt-form{
     margin-top: 0px;
     width: calc(100% + 5px);
     height: 95%;
+}
+#containerMedidorVelocidade{
+    margin-top: -15px;
 }
 
 
@@ -349,6 +368,10 @@ th{
 #btFechaModal{
     margin-right: -10px !important;
 }
+
+
+
+
 
 
 @media screen and (min-width: 300px) {

@@ -99,16 +99,29 @@
 
             <div class="row mt-0">
                 <div class="col-sm-9">
-                    @if( isset($data['ultimoLancamento']) && count($data['ultimoLancamento']) )
-                        <h6 class="text text-secondary" id="h3-move-informe"><i> Data: {{ date('d-m-Y',strtotime( $data['ultimoLancamento'][0]->dtInforme )) }} </i></h6>
-                    @else
-                        <h6 class="text text-secondary" id="h3-move-informe"><i>Sem Lançamentos Informados...</i></h6>
-                    @endif
+                    <div class="row">
+                        <div class="col-sm-5">
+                            @if( isset($data['ultimoLancamento']) && count($data['ultimoLancamento']) )
+                                <h6 class="text text-secondary" id="h3-move-informe"><em> Data: {{ date('d-m-Y',strtotime( $data['ultimoLancamento'][0]->dtInforme )) }} </em></h6>
+                            @else
+                                <h6 class="text text-secondary" id="h3-move-informe"><em>Sem Lançamentos Informados...</em></h6>
+                            @endif
+                        </div>
+                        <div class="col-sm-7">
+                            <div id="containerMedidorVelocidade">
+                                <label for="velocidade"> &nbsp;&nbsp;&nbsp; Velocidade</label>
+                                <input type="range" id="velocidade" min="0" max="20" value="16">
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="col-sm-3">
-                    <div class="btn-group ml-4">
-                        <button class="bt-move-informe" data-move="-1"> <b> << </b> </button>
-                        <button class="bt-move-informe" data-move="1"> <b> >> </b> </button>
+                    <div id="containerBtMoves" class="btn-group">
+                        <span class="bt-move-informe" data-move="3"> &#x23F9 </span>
+                        <span class="bt-move-informe" data-move="0"> &#x25B6 </span>
+                        <span class="bt-move-informe" data-move="-1"> &#x23EA </span>
+                        <span class="bt-move-informe" data-move="1"> &#x23E9 </span>
                     </div>
                 </div>
             </div>
@@ -121,7 +134,9 @@
 <div class="row">
 
     <div class="col-sm-12">
-        
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
         <div id="containerGrafico">
             @include('graficos.informe')
         </div>
