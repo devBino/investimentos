@@ -29,6 +29,7 @@ Route::get('/papel-pesquisar','Papel@index')->middleware(['IsOk']);
 Route::get('/alvo','Alvo@index')->middleware(['IsOk']);
 Route::post('/alvo-salvar','Alvo@salvar')->middleware(['IsOk']);
 Route::get('/alvo-deletar/{chave}','Alvo@deletar')->middleware(['IsOk']);
+Route::get('/alvo-ordenar','Alvo@pesquisaOrdenar')->middleware(['IsOk']);
 Route::post('/alvo-ordenar','Alvo@pesquisaOrdenar')->middleware(['IsOk']);
 
 //APORTES

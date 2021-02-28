@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<div class="row">
+<!--<div class="row">
     <div class="col-sm-12">
         <div class="borda">
             <form action="/alvo-salvar" method="post">
@@ -64,7 +64,7 @@
 
     </div>
 
-</div>
+</div>-->
 
 <div class="row">
     <div class="col-sm-12">
@@ -76,7 +76,7 @@
                 <div class="col-sm-6">
                     
                     <form action="/alvo-ordenar" method="post">
-                        <input type="hidden" name="_token" value="{!! csrf_token() !!}">
+                        <input id="tkn" type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="row">
                             <div class="col-sm-5 form-group">
                                 <select name="ordenacao" id="ordenacao" class="form-control form-control-sm" required>
@@ -96,6 +96,7 @@
                             </div>
                             <div class="col-sm-2 form-group d-flex justify-content-start">
                                 <button class="btn btn-info btn-sm"><i class="fas fa-filter"></i></button>   
+                                <span id="atualizaCotacao" class="btn btn-info btn-sm ml-1"><i id="icon-bt" class="fas fa-sync"></i></span>
                             </div>
                         </div>
                     </form>

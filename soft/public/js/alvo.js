@@ -1,6 +1,6 @@
 var objConfigs = {
-    htmlInProgress: `<i id="icon-bt" class="fas fa-spinner fa-spin"></i> Atualizando Papeis`,
-    htmlFinished: `<i id="icon-bt" class="fas fa-sync"></i> Atualizar Cotações  `
+    htmlInProgress: `<i id="icon-bt" class="fas fa-spinner fa-spin"></i>`,
+    htmlFinished: `<i id="icon-bt" class="fas fa-sync"></i>`
 }
 
 $(function(){

@@ -134,24 +134,31 @@ class Alvo{
                 }
             }
 
-            $chaveAlvoAporte    = session()->get('autenticado.id_user') . "_" . $val->cdPapel . "_1";
-            $dadosAlvoAporte    = unserialize(Redis::get($chaveAlvoAporte));
             
-            if( $dadosAlvoAporte ){
+            $valorPrecoMedioPapel = $this->precoMedioPapel($val->cdPapel);
+
+            $dadosAlvoAporte    = [];
+            
+            if( $val->cdTipo == 2 && $valorPrecoMedioPapel > 0 ){
+                $dadosAlvoAporte['precoAlvo']   = (float) self::getPrecoAlvo($val->cdPapel, session()->get('autenticado.id_user'));
+                $dadosAlvoAporte['precoAlvo']   = number_format($dadosAlvoAporte['precoAlvo'],2,'.','');
+                $dadosAlvoAporte['tipo']        = 1;
+                $dadosAlvoAporte['codPapel']    = $val->cdPapel;
+
                 $dadosAlvoAporte['cdPapel']     = $val->cdPapel;
                 $dadosAlvoAporte['nmPapel']     = $val->nmPapel;
-                $dadosAlvoAporte['precoMedio']  = $this->precoMedioPapel($val->cdPapel);
+                $dadosAlvoAporte['precoMedio']  = $valorPrecoMedioPapel;
                 $dadosAlvoAporte['cotacao']     = $val->cotacao;
                 $dadosAlvoAporte['diferenca']   = $dadosAlvoAporte['precoAlvo'] - $val->cotacao;
                 $dadosAlvoAporte['ativo']       = unserialize(Redis::get('sub_tipo_papel'))[$val->subTipo];
                 $dadosAlvoAporte['ultimaOco']   = $ultimoAporte;
                 $dadosAlvoAporte['comparaPrecoMedioCotacao']    = $dadosAlvoAporte['precoMedio'] - $dadosAlvoAporte['cotacao'];
                 $dadosAlvoAporte['atualizacaoDiaria'] = count($dadosAtualizacaoDiaria) ? $dadosAtualizacaoDiaria[0]->dtCotacao : 0;
+                
                 $return[] = $dadosAlvoAporte;
             }
-
-            $chaveAlvoResgate   = session()->get('autenticado.id_user') . "_" . $val->cdPapel . "_2";
-            $dadosAlvoResgate   = unserialize(Redis::get($chaveAlvoResgate));
+            
+            /*$dadosAlvoResgate   = [];
 
             if( $dadosAlvoResgate ){
                 $dadosAlvoResgate['cdPapel']    = $val->cdPapel;
@@ -164,7 +171,7 @@ class Alvo{
                 $dadosAlvoResgate['comparaPrecoMedioCotacao']    = $dadosAlvoResgate['precoMedio'] - $dadosAlvoResgate['cotacao'];
                 $dadosAlvoResgate['atualizacaoDiaria'] = count($dadosAtualizacaoDiaria) ? $dadosAtualizacaoDiaria[0]->dtCotacao : 0;
                 $return[] = $dadosAlvoResgate;
-            }
+            }*/
 
         }
 
@@ -214,6 +221,17 @@ class Alvo{
     */
     public function precoMedioPapel($cdPapel){
         return PAP::getPrecoMedioPapel($cdPapel);
+    }
+
+    public function getPrecoAlvo($cdPapel,$cdUsuario){
+        $dados = DB::select( DB::raw( 'call spSugerePrecoAporte( '.$cdPapel.','.$cdUsuario.')' ) );
+
+        if( count($dados) && isset( $dados[0]->precoAlvo ) ){
+            return $dados[0]->precoAlvo;
+        }else{
+            return '0.00';
+        }
+
     }
 
 }
