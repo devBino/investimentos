@@ -33,6 +33,11 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link" href="cotacao">
+                    <span>Cotação</span></a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="alvo">
                     <span>Alvos</span></a>
                 </li>

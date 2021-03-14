@@ -19,7 +19,9 @@ class Cotacao{
         try{
 
             $url = "https://api.hgbrasil.com/finance/stock_price?key=".getenv('API_HGBRASIL')."&symbol=".$codAcao;
-            
+            if($codAcao == 'itsa4f' || $codAcao == 'ITSA4f'){
+                dd($url);
+            }
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
