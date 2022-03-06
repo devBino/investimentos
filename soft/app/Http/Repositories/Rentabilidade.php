@@ -33,15 +33,20 @@ class Rentabilidade{
         $timesRend      = $timesAtual - $timesAporte;
         $anos           = $timesRend / $timesAno;
         $dias           = $timesRend / $timesDia;
-
+        
         $taxaIof        = TX::getTaxaIof($dias);
         $taxaIr         = TX::getTaxaIr($dias);
-
+        
         $montanteBruto  = $capital * pow( ( 1 + ($params['taxaRetorno'] / 100) ), $anos);
         $lucroBruto     = $montanteBruto - $capital;
         
+        $descIr = 0.00;
+        
+        if( isset($params['aplicarIr']) && boolval($params['aplicarIr']) == true ){
+            $descIr         = ( $lucroBruto / 100 ) * $taxaIr;
+        }
+
         $descIof        = ( $lucroBruto / 100 ) * $taxaIof;
-        $descIr         = ( $lucroBruto / 100 ) * $taxaIr;
         $descAdmin      = ( $lucroBruto / 100 ) * $params['taxaAdmin'];
         
         $montanteFinal  = $montanteBruto - ( $descIof + $descIr + $descAdmin );
@@ -104,8 +109,14 @@ class Rentabilidade{
         
         if( $lucroBruto > 0 ){
             //$descIof        = ( $lucroBruto / 100 ) * $taxaIof;
-            $descIof = 0.00;
-            $descIr         = ( $lucroBruto / 100 ) * $taxaIr;
+            
+            $descIr             = 0.00;
+
+            if( isset($params['aplicarIr']) && boolval($params['aplicarIr']) == true ){
+                $descIr         = ( $lucroBruto / 100 ) * $taxaIr;
+            }
+            
+            $descIof        = 0.00;
             $descAdmin      = ( $lucroBruto / 100 ) * $params['taxaAdmin'];
         }else{
             $descIof        = 0.00;

@@ -120,7 +120,7 @@ class Resgate{
         if( !count($dadosAporte) ){
             return redirect('resgate');
         }
-
+        
         if( $dadosAporte[0]->cdStatus == 1 ){
 
             $campos['cdPapel'] = $dadosAporte[0]->cdPapel;
@@ -143,7 +143,8 @@ class Resgate{
                     'capital'=>$dadosAporte[0]->subTotal,
                     'dtAporte'=>$dadosAporte[0]->dtAporte,
                     'taxaRetorno'=>$dadosAporte[0]->taxaRetorno,
-                    'taxaAdmin'=>$dadosAporte[0]->taxaAdmin
+                    'taxaAdmin'=>$dadosAporte[0]->taxaAdmin,
+                    'aplicarIr'=>true
                 ];
                 
                 $detalhesResgate = RENT::calculoRentabilidade($paramsCalculo,true);
@@ -173,7 +174,8 @@ class Resgate{
                     'capital'=>$dadosAporte[0]->subTotal,
                     'dtAporte'=>$dadosAporte[0]->dtAporte,
                     'taxaAdmin'=>$dadosAporte[0]->taxaAdmin,
-                    'taxaIr'=>$dadosPapel[0]->taxaIr
+                    'taxaIr'=>$dadosPapel[0]->taxaIr,
+                    'aplicarIr'=>true
                 ];
 
                 $detalhesResgate = RENT::calculoRentabilidadeRendaVar($paramsCalculo,true);
@@ -196,7 +198,8 @@ class Resgate{
                     'capital'=>$dadosAporte[0]->subTotal,
                     'dtAporte'=>$dadosAporte[0]->dtAporte,
                     'taxaRetorno'=>$dadosAporte[0]->taxaRetorno,
-                    'taxaAdmin'=>$dadosAporte[0]->taxaAdmin
+                    'taxaAdmin'=>$dadosAporte[0]->taxaAdmin,
+                    'aplicarIr'=>true
                 ];
                 
                 $detalhesResgate = RENT::calculoRentabilidade($paramsCalculo,true);
@@ -220,9 +223,9 @@ class Resgate{
             $campos['taxaAdmin'] = $dadosAporte[0]->taxaAdmin;
             $campos['dtResgate'] = date('Y-m-d H:d:s');
             $campos['cdUsuario'] = $dadosAporte[0]->cdUsuario;
-            
+        
             $acao = CRUD_DB::salvar(['tabela'=>'resgates','dados'=>$campos]);
-
+            
             $cdStatus = 2;
 
         }else{
@@ -235,7 +238,7 @@ class Resgate{
             
             $cdStatus = 1;
         }
-
+        
         $acaoAlteraStatus = CRUD_DB::alterar([
             'tabela'=>'aportes',
             'campo'=>'cdAporte',

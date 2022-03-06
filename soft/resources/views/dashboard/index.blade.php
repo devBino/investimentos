@@ -31,60 +31,6 @@
     <div class="col-sm-12">
         <div class="borda">
 
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                        <div class="card-header">Caixa</div>
-                        <div class="card-body">
-                            @if( $stPermissaoValores == 1 )
-                                <center><h6 class="card-title">R$ {{ number_format($data['totalCaixa'],2,',','.') }}</h5></center>
-                            @else
-                                <center><h6 class="card-title">R$ -</h5></center>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-3">
-                    <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-                        <div class="card-header">Aplicado X Rendimentos</div>
-                        <div class="card-body">
-                            @if( $stPermissaoValores == 1 )
-                                <center><h6 class="card-title"> R$ {{ number_format($data['totalAportes'],2,',','.') }} X R$ {{ number_format($data['rendimentoAportes'],2,',','.') }}</h5></center>
-                            @else
-                                <center><h6 class="card-title"> R$ -</h5></center>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-3">
-                    <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
-                        <div class="card-header">Resgatado</div>
-                        <div class="card-body">
-                            @if( $stPermissaoValores == 1 )
-                                <center><h6 class="card-title">R$ {{ number_format($data['totalResgates'],2,',','.') }}</h5></center>
-                            @else
-                                <center><h6 class="card-title"> R$ -</h5></center>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-3">
-                    <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
-                        <div class="card-header">Patrimônio</div>
-                        <div class="card-body">
-                            @if( $stPermissaoValores == 1 )
-                                <center><h6 class="card-title">R$ {{ number_format($data['totalPatrimonio'],2,',','.') }}</h5></center>
-                            @else
-                                <center><h6 class="card-title"> R$ -</h5></center>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             @php
 
                 $escondeTollTips = "";

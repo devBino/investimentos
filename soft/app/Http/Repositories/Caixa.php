@@ -33,7 +33,7 @@ class Caixa{
         }
 
         $totalDepositos = $totalDepositos->sum('valor');
-
+        
         //soma total retiradas
         $totalRetiradas = DB::table('lancamentos')
             ->select('valor')
@@ -46,21 +46,8 @@ class Caixa{
         }
 
         $totalRetiradas = $totalRetiradas->sum('valor');
-    
-        //variáveis que vão compor o saldo
-        $descontosInvestimentos     = 0;
-        $descontoAportesInativos    = 0;
-        $proventosInvestimentos     = 0;
-        $resgatesInvestimentos      = 0;
-
-        if( !count($params) && $saldoCompacto ){
-            $descontosInvestimentos     = MOV::getSomaAportesUsuario();
-            $descontoAportesInativos    = MOV::getSomaAportesInativos();
-            $proventosInvestimentos     = MOV::getSomaProventosUsuario();
-            $resgatesInvestimentos      = MOV::getSomaResgatesUsuario();
-        }
-
-        $totalSaldo = ($totalDepositos + $proventosInvestimentos + $resgatesInvestimentos) - ($totalRetiradas + $descontosInvestimentos + $descontoAportesInativos);
+        
+        $totalSaldo = $totalDepositos - $totalRetiradas;
 
         return $totalSaldo;
 

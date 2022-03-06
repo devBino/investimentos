@@ -19,6 +19,7 @@ class Caixa{
         $lancamentos = DB::table('lancamentos')
             ->select()
             ->where('cdUsuario',session()->get('autenticado.id_user'))
+            ->orderBy('cdLancamento','desc')
             ->get();
         
         $listagem['lancamentos'] = $lancamentos;
@@ -64,6 +65,7 @@ class Caixa{
             $lancamentos = $lancamentos->whereMonth('dtLancamento', $params['mes']);
         }
 
+        $lancamentos = $lancamentos->orderBy('cdLancamento','desc');
         $lancamentos = $lancamentos->get();
 
         $listagem = ['lancamentos'=>$lancamentos];

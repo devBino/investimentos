@@ -217,7 +217,7 @@ class Provento{
                 $valorizacaoPercentual  = $valorizacaoReal / $totalAportado * 100;
                 
                 //alimenta $result para linhas da tabela
-                $resultPapel['papel']                    = $papeis[$i]->cdPapel." - ".$papeis[$i]->nmPapel;
+                $resultPapel['papel']                    = $papeis[$i]->nmPapel;
                 $resultPapel['totalAportado']            = $totalAportado;
                 $resultPapel['qtdeCotas']                = $qtdeCotas;
                 $resultPapel['posicaoAtual']             = $posicaoAtualPapel;

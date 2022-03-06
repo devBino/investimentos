@@ -241,6 +241,13 @@ class Papel{
 
     }
 
+    public function atualizaCotacaoFiisCmd(){
+        
+        $comando = "python3 /var/www/python/investimentos/fii/fiis.py";
+        $papeis = PAP::getContagemPapeis();
+        
+    }
+
     /**
      * @description recebe o codigo do papel e calcula seu preço médio de aportes
      * @param int $cdPapel
