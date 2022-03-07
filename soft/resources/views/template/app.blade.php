@@ -57,6 +57,11 @@
                     <span>Informe</span></a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="rendimentos">
+                    <span>IR</span></a>
+                </li>
+
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
 

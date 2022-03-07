@@ -130,6 +130,23 @@ class Papel{
         return $resgates;
     }
 
+    public static function getRendimentosPapel($cdPapel){
+
+        $rendimentos = DB::table('resgates')
+            ->select(
+                DB::raw('sum(capitalInicial) as aportes'),
+                DB::raw('sum(montanteLiquido) as resgates'),
+                DB::raw('sum(lucroLiquido) as lucro'),
+                DB::raw('sum(descontoIr) as descontoIr')
+            )
+            ->where('cdPapel',$cdPapel)
+            ->where('cdUsuario',session()->get('autenticado.id_user'))
+            ->get();
+        
+        return $rendimentos;
+
+    }
+
     public static function getProventosPapel($cdPapel){
         $proventos = DB::table('proventos')
             ->select(
