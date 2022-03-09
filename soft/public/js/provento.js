@@ -1,4 +1,4 @@
-$(function(){
+$(async function(){
     
     $('.deleta').click(function(){
 
@@ -7,6 +7,18 @@ $(function(){
         }else{
             return false
         }
+
+    })
+
+    $('#papel').change(function(){
+
+        var dadosQtdes = JSON.parse( $('#qtdeCotas').val() )
+
+        $('#qtde').val( dadosQtdes[ $('#papel').find(':selected').text() ] )
+
+        setTimeout(()=>{
+            $('#valor').focus()
+        },300)
 
     })
 
@@ -34,9 +46,19 @@ $(function(){
         $('#modal').hide()
     })
 
+    $('#btSalvar').click(function(){
+        if( confirm('CONFIRMA O LANÇAMENTO? NÃO PODERÁ SER DELETADO FUTURAMENTE...') ){
+            return true
+        }else{
+            return false
+        }
+    })
+
     
     
-    configsInicio()
+    if( await configsInicio() ){
+        $('#papel').focus()
+    }
 
 })
 

@@ -20,15 +20,28 @@ $(function(){
 })
 
 function configsInicio(){
-    try{
+    return new Promise((resolve,reject)=>{
+
+        try{
         
-        setTimeout(function(){
-            estilizaSelects()
-        },500)
+            setTimeout(function(){
+                
+                var campos = $('select')
         
-    }catch(e){
-        console.error(e)
-    }
+                for( const campo of campos ){
+                    $(campo).addClass('class-select')
+                    $(campo).select2()
+                }
+
+                resolve(true)
+            },500)
+            
+        }catch(e){
+            console.error(e)
+            reject(false)
+        }
+
+    })
 }
 
 function send_ajax(url=null, type=null, data=null, callback=null){

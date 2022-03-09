@@ -19,7 +19,8 @@ class Rendimentos{
                 DB::raw('null as rendimentos'),
                 DB::raw('0.00 as irDevido')
             )
-            ->join('papel as p','p.cdPapel','=','r.cdPapel');
+            ->join('papel as p','p.cdPapel','=','r.cdPapel')
+            ->where( 'r.cdUsuario',session()->get('autenticado.id_user') );
         
         if( isset($params['ano']) && !empty($params['ano']) ){
             $dados = $dados->whereYear('r.dtResgate',$params['ano']);

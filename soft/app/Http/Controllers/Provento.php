@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Repositories\CRUD as CRUD_DB;
 use App\Http\Repositories\Movimento as MOV;
 use App\Http\Repositories\Papel as PAP;
+use App\Http\Repositories\Caixa as CX;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use DB;
@@ -34,6 +35,12 @@ class Provento{
 
     public function salvar(Request $request){
         $params = $request->all();
+
+        $dadosPapel = PAP::getPapel($params['papel']);
+
+        if( !count($dadosPapel) ){
+            return redirect('provento')->with('status','Ativo não localizado...|danger');
+        }
         
         $campos = [
             'cdPapel'=>$params['papel'],
@@ -48,6 +55,18 @@ class Provento{
         $acao = CRUD_DB::salvar(['tabela'=>'proventos','dados'=>$campos]);
 
         if( $acao > 0 ){
+
+            CX::salvar([
+                'descricao' =>'Proventos - ' 
+                    . $dadosPapel[0]->nmPapel . ' ' 
+                    . $campos['qtde'] . ' X ' 
+                    . number_format($campos['valor'],2,',','.') . ' = ' 
+                    . number_format($campos['subTotal'],2,',','.'),
+                'tipo' => '1',
+                'valor' => $campos['subTotal'],
+                'dataLancamento'=>$campos['dtProvento']
+            ]);
+
             $msg = "Provento registrado com sucesso!|success";
         }else{
             $msg = "Não foi possível registrar o provento...|danger";
@@ -167,13 +186,7 @@ class Provento{
 
                 
                 //busca aporte mais antigo não resgatado                
-                $dadosUltimoAporte = DB::table('aportes')
-                    ->select('dtAporte')
-                    ->where('cdUsuario',session()->get('autenticado.id_user'))
-                    ->where('cdPapel',$papeis[$i]->cdPapel)
-                    ->where('cdStatus',1)
-                    ->limit(1)
-                    ->get();
+                $dadosUltimoAporte = PAP::getUltimoAporte($papeis[$i]->cdPapel);
                 
                 //caso nunca tenha aportado no papel
                 if( !count($dadosUltimoAporte) || !isset($dadosUltimoAporte[0]->dtAporte) ){
@@ -190,14 +203,8 @@ class Provento{
                     ->sum('subTotal');
 
                 //soma quantidade de cotas totais aportadas e não resgatado, desde a data do aporte mais antigo não resgatado, até a presente data
-                $qtdeCotas = DB::table('aportes')
-                    ->select('qtde')
-                    ->where('cdUsuario',session()->get('autenticado.id_user'))
-                    ->where('cdPapel',$papeis[$i]->cdPapel)
-                    ->where('cdStatus',1)
-                    ->where('dtAporte','>=',$dadosUltimoAporte[0]->dtAporte)
-                    ->sum('qtde');
-
+                $qtdeCotas = PAP::getQuantidadeCotasPapel($papeis[$i]->cdPapel, $dadosUltimoAporte);
+                
                 //soma valor total aportado e não resgatado, desde a data recuperada até a presente data                
                 $proventosPagos = DB::table('proventos')
                     ->select('subTotal')
@@ -205,6 +212,7 @@ class Provento{
                     ->where('cdPapel',$papeis[$i]->cdPapel)
                     ->where('dtProvento','>=',$dadosUltimoAporte[0]->dtAporte)
                     ->sum('subTotal');
+
                 $dYield = $proventosPagos / $totalAportado * 100;
 
                 //calcula posição atual do papel com base no valor da cotação multiplicado por cotas não resgatadas

@@ -23,6 +23,18 @@
             <form action="/provento-salvar" method="post">
                 
                 <input type="hidden" id="tkn" name="_token" value="{!! csrf_token() !!}">
+                
+                @php
+                    
+                    $cotas = [];
+
+                    foreach($data['papeis'] as $num => $val){
+                        $cotas[ $val->nmPapel ] = $val->cotas;
+                    }
+
+                @endphp
+
+                <input type="hidden" id="qtdeCotas" value="{{json_encode($cotas)}}">
 
                 <fieldset class="borda">
                     
@@ -32,7 +44,7 @@
                         
                         <div class="col-sm-4 form-group">
                             <label>Papel</label>
-                            <select name="papel" id="papel" class="form-control form-control-sm" required>
+                            <select name="papel" id="papel" class="form-control form-control-sm" required autofocus="on">
                                 <option></option>
                                 
                                 @if( isset($data['papeis']) && count($data['papeis']) )
@@ -81,7 +93,7 @@
 
                         <div class="col-sm-6 justify-content-start">
                             <div class="btn-group">
-                                <button class="btn btn-success btn-sm mt-4 pt-2"><i class="fas fa-check"></i></button>
+                                <button id="btSalvar" class="btn btn-success btn-sm mt-4 pt-2"><i class="fas fa-check"></i></button>
                                 <span class="btn btn-info btn-sm mt-4 pt-2 limpar_form"><i class="fas fa-eraser"></i></span>
                                 <span id="btPesquisar" class="btn btn-info mt-4 pt-2"><i class="fas fa-search"></i></span>
                             </div>
@@ -123,7 +135,7 @@
                         <th>Qtde</th>
                         <th>SubTotal</th>
                         <th>Data Provento</th>
-                        <th><center>-</center></th>
+                        <!--<th><center>-</center></th>-->
                     </tr>
                 </thead>
                 <tbody>
@@ -138,7 +150,7 @@
                                 <td>{{ $val->qtde }}</td>
                                 <td>R$ {{ number_format($val->subTotal,2,',','.') }}</td>
                                 <td>{{ date('d-m-Y H:i:s',strtotime($val->dtProvento)) }}</td>
-                                <td><center><a href="/provento-deletar/{{$val->cdProvento}}" class="btn btn-danger btn-sm deleta"><i class="fas fa-trash"></i></a></center></td>
+                                <!--<td><center><a href="/provento-deletar/{{$val->cdProvento}}" class="btn btn-danger btn-sm deleta"><i class="fas fa-trash"></i></a></center></td>-->
 
                             </tr>
                             

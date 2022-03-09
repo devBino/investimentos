@@ -16,10 +16,6 @@
     @endphp
 @endif
 
-@php
-    $total = 0;
-@endphp
-
 <table class="table table-bordered table-sm table-striped" id="dataTable" width="100%" cellspacing="0">
     <thead>
         <tr class="table-active">
@@ -36,33 +32,35 @@
     </thead>
     <tbody>
         
-        @php $sinalOperacao = "-"; @endphp
+        
 
         @if( isset( $data['lancamentos'] ) && count($data['lancamentos']) )
             @foreach( $data['lancamentos'] as $num => $val )
-                
-                @php $sinalOperacao = "-"; @endphp
-                
+                 
+                @php
+                    $sinalOperacao      = "-"; 
+                    $classSpanValores   = "text-danger";
+                @endphp
+
                 @if( $val->cdTipo == 1 )
                     @php 
-                        $sinalOperacao = "+"; 
-                        $total += $val->valor;
+                        $sinalOperacao = "+";
+                        $classSpanValores   = "text-success";
                     @endphp
 
-                @endif
-
-                @if( !isset($data['flagRelatorio']) )
-                    @php
-                        $sinalOperacao = ""; 
-                        $total -= $val->valor;
-                    @endphp
                 @endif
 
                 <tr class="tr_caixa" style="display:{{$displayTr}};">
 
                     <td>{{$val->descricao}}</td>
                     <td>{{ date('d-m-Y H:i:s',strtotime($val->dtLancamento)) }}</td>
-                    <td><center>{{$sinalOperacao.$simbolo.number_format($val->valor,2,',','.') }}</center></td>
+                    <td>
+                        <center>
+                            <span class="{{$classSpanValores}}">
+                                {{$sinalOperacao.$simbolo.number_format($val->valor,2,',','.') }}
+                            </span>
+                        </center>
+                    </td>
                     <td>
                         @if( $val->cdTipo == 1 )
                             Depósito
@@ -71,8 +69,18 @@
                         @endif
                     </td>
 
-                    @if( !isset($data['flagRelatorio']) )
-                        <td><center><a href="/caixa-deletar/{{$val->cdLancamento}}" class="btn btn-danger btn-sm deleta"><i class="fas fa-trash"></i></a></center></td>
+                    @if( !isset($data['flagRelatorio'])
+                        && strrpos($val->descricao, "Aporte") === false 
+                        && strrpos($val->descricao, "Resgate") === false )
+
+                        <!--<td><center><a href="/caixa-deletar/{{$val->cdLancamento}}" class="btn btn-danger btn-sm deleta"><i class="fas fa-trash"></i></a></center></td>-->
+
+                        <td><center>-</center></td>
+
+                    @else
+
+                        <td><center>-</center></td>
+
                     @endif
 
                 </tr>
@@ -83,7 +91,11 @@
     <tfoot>
         <tr class="table-active">
             <th colspan=2>Total</th>
-            <th>{{$simbolo.number_format($total,2,',','.')}}</th>
+            <th>
+                <center>
+                    {{$simbolo.number_format($data['saldo'],2,',','.')}}
+                </center>
+            </th>
             <th></th>
             
             @if( !isset($data['flagRelatorio']) )

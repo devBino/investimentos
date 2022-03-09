@@ -83,21 +83,9 @@ class Caixa{
     }
 
     public function salvar( Request $request ){
-        //resgata requisição
-        $params = $request->all();
         
-        //seta os campos previamente
-        $campos = [
-            'descricao'=>$params['descricao'],
-            'valor'=>$params['valor'],
-            'dtLancamento'=> ( !is_null($params['dataLancamento']) && !empty($params['dataLancamento']) ) ? date('Y-m-d', strtotime($params['dataLancamento'])) . date(' H:i:s') : date('Y-m-d H:i:s'),
-            'cdTipo'=>$params['tipo'],
-            'cdUsuario'=>session()->get('autenticado.id_user')
-        ];
-            
-        $acao = CRUD_DB::salvar(['tabela'=>'lancamentos','dados'=>$campos]);
+        $acao = CX::salvar($request->all());
 
-        //redireciona com status
         if( $acao > 0 ){
             $msg = "Lançamento registrado com sucesso!|success";
         }else{
@@ -110,13 +98,7 @@ class Caixa{
 
     public function deletar( $id ){
         
-        $dados = [
-            'tabela'=>'lancamentos',
-            'campo'=>'cdLancamento',
-            'valor'=>$id
-        ];
-
-        $acao = CRUD_DB::deletar($dados);
+        $acao = CX::deletar($id);
 
         if( $acao > 0 ){
             $msg = "Lançamento deletado com sucesso!|success";

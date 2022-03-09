@@ -44,7 +44,7 @@
 
                         <div class="col-sm-3 justify-content-start">
                             <div class="btn-group">
-                                <button class="btn btn-success btn-sm mt-4 pt-2"><i class="fas fa-check pb-2"></i></button>
+                                <button id="btSalvar" class="btn btn-success btn-sm mt-4 pt-2"><i class="fas fa-check pb-2"></i></button>
                                 <span class="btn btn-info btn-sm mt-4 pt-2 limpar_form"><i class="fas fa-eraser pb-2"></i></span>
                             </div>
                         </div>

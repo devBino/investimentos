@@ -3,11 +3,42 @@ namespace App\Http\Repositories;
 
 use DB;
 use Exception;
+use App\Http\Repositories\CRUD as CRUD_DB;
 use App\Http\Repositories\Movimento as MOV;
 
 class Caixa{
     
     public function __construct(){
+
+    }
+
+    public static function salvar($params = []){
+        
+        $campos = [
+            'descricao'=>$params['descricao'],
+            'valor'=>$params['valor'],
+            'dtLancamento'=> ( !is_null($params['dataLancamento']) && !empty($params['dataLancamento']) ) ? date('Y-m-d', strtotime($params['dataLancamento'])) . date(' H:i:s') : date('Y-m-d H:i:s'),
+            'cdTipo'=>$params['tipo'],
+            'cdUsuario'=>session()->get('autenticado.id_user')
+        ];
+            
+        $acao = CRUD_DB::salvar(['tabela'=>'lancamentos','dados'=>$campos]);
+
+        return $acao;
+
+    }
+
+    public static function deletar($id){
+        
+        $dados = [
+            'tabela'=>'lancamentos',
+            'campo'=>'cdLancamento',
+            'valor'=>$id
+        ];
+
+        $acao = CRUD_DB::deletar($dados);
+
+        return $acao;
 
     }
 
@@ -48,7 +79,7 @@ class Caixa{
         $totalRetiradas = $totalRetiradas->sum('valor');
         
         $totalSaldo = $totalDepositos - $totalRetiradas;
-
+        
         return $totalSaldo;
 
     }

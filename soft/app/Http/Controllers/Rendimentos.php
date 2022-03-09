@@ -13,7 +13,6 @@ class Rendimentos{
 
     public function index(Request $request){
         
-        $data['papeis']         = PAP::getPapeisRendaVariavel();
         $data['rendimentos']    = REND::getRendimentos( $request->all() );
         $data['totais']         = REND::getTotais( $data['rendimentos'] );
         

@@ -27,7 +27,13 @@ class Dashboard{
 
         $data['totalAportes']           = MOV::getSomaAportesUsuario();
         $data['rendimentoAportes']      = MOV::getRendimentosUsuario();
-        $data['variacaoPatrimonial']    = ( $data['rendimentoAportes'] - $data['totalAportes'] ) / $data['totalAportes'] * 100;
+
+        $data['variacaoPatrimonial']    = 0.00;
+
+        if( $data['rendimentoAportes'] > 0.00 && $data['totalAportes'] > 0.00 ){
+            $data['variacaoPatrimonial']    = ( $data['rendimentoAportes'] - $data['totalAportes'] ) / $data['totalAportes'] * 100;
+        }
+
         $data['totalResgates']          = MOV::getSomaResgatesUsuario();
         $data['totalPatrimonio']        = $data['totalCaixa'] + $data['rendimentoAportes'];
         $data['contagemTipos']          = PAT::getContagemTiposAtivos();

@@ -26,6 +26,10 @@ $(function(){
         }else{
             $('#taxaRetorno').val('0')
         }
+
+        setTimeout(() => {
+            $('#valor').focus()
+        }, 300)
         
     })
 

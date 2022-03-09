@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Http\Repositories\CRUD as CRUD_DB;
 use App\Http\Repositories\Movimento as MOV;
 use App\Http\Repositories\Papel as PAP;
+use App\Http\Repositories\Aporte as APO;
+use App\Http\Repositories\Caixa as CX;
 use App\Http\Repositories\Rentabilidade as RENT;
 use App\Http\Repositories\ExportData as EXPDATA;
 use Illuminate\Http\Request;
@@ -90,7 +92,7 @@ class Resgate{
             ->get();
 
         if( count($agrupaAportes) > 1 ){
-            return redirect('resgate')->with('status','Os aportes pra resgate devem ser do mesmo Papel|info');
+            return redirect('resgate')->with('status','Os aportes para resgate devem ser do mesmo Papel|info');
         }
 
         //efetua os resgates um por um sem redirecionar
@@ -111,29 +113,25 @@ class Resgate{
         $cotacao = preg_replace('/[^0-9,]/','',$cotacao);
         $cotacao = str_replace(',','.',$cotacao);
 
-        $dadosAporte = DB::table('aportes')
-            ->select()
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->where('cdAporte',$aporte)
-            ->get();
-
+        $dadosAporte = APO::getAporte($aporte);
+        
         if( !count($dadosAporte) ){
             return redirect('resgate');
         }
-        
-        if( $dadosAporte[0]->cdStatus == 1 ){
 
+        $dadosPapel = PAP::getPapel($dadosAporte[0]->cdPapel);
+        
+        if( !count($dadosPapel) ){
+            return redirect('resgate');
+        }
+
+        if( $dadosAporte[0]->cdStatus == 1 ){
+            
             $campos['cdPapel'] = $dadosAporte[0]->cdPapel;
             $campos['cdAporte'] = $dadosAporte[0]->cdAporte;
             $campos['valor'] = $dadosAporte[0]->valor;
             $campos['qtde'] = $dadosAporte[0]->qtde;
             $campos['subTotal'] = $dadosAporte[0]->subTotal;
-
-            $dadosPapel = DB::table('papel')
-                ->select('cotacao','cdTipo','nmPapel','taxaIr')
-                ->where('cdUsuario',session()->get('autenticado.id_user'))
-                ->where('cdPapel',$dadosAporte[0]->cdPapel)
-                ->get();
 
             $tipoPapel = session()->get('autenticado.tipo_papel')[ $dadosPapel[0]->cdTipo ];
             
@@ -218,34 +216,33 @@ class Resgate{
 
             }
             
-            
             $campos['taxaRetorno'] = $dadosAporte[0]->taxaRetorno;
             $campos['taxaAdmin'] = $dadosAporte[0]->taxaAdmin;
-            $campos['dtResgate'] = date('Y-m-d H:d:s');
+            $campos['dtResgate'] = date('Y-m-d H:i:s');
             $campos['cdUsuario'] = $dadosAporte[0]->cdUsuario;
         
             $acao = CRUD_DB::salvar(['tabela'=>'resgates','dados'=>$campos]);
-            
-            $cdStatus = 2;
 
-        }else{
+            if( $acao > 0 ){
 
-            $acao = CRUD_DB::deletar([
-                'tabela'=>'resgates',
-                'campo'=>'cdAporte',
-                'valor'=>$dadosAporte[0]->cdAporte
-            ]);
-            
-            $cdStatus = 1;
+                CX::salvar([
+                    'descricao' =>'Resgate Efetuado - Código: ' . $dadosAporte[0]->cdPapel . " - " . $dadosPapel[0]->nmPapel,
+                    'tipo' => '1',
+                    'valor' => $campos['montanteLiquido'],
+                    'dataLancamento'=>date('Y-m-d H:i:s')
+                ]);
+
+                $acaoAlteraStatus = CRUD_DB::alterar([
+                    'tabela'=>'aportes',
+                    'campo'=>'cdAporte',
+                    'valor'=>$dadosAporte[0]->cdAporte,
+                    'valores'=>['cdStatus'=>'2']
+                ]);
+
+            }
+         
         }
         
-        $acaoAlteraStatus = CRUD_DB::alterar([
-            'tabela'=>'aportes',
-            'campo'=>'cdAporte',
-            'valor'=>$dadosAporte[0]->cdAporte,
-            'valores'=>['cdStatus'=>$cdStatus]
-        ]);
-
         if( $redirect ){
             return redirect('resgate');
         }else{

@@ -201,7 +201,7 @@ class Movimento{
         }
 
         //finaliza
-        $proventos = $proventos->get();
+        $proventos = $proventos->orderBy('p.dtProvento','desc')->get();
 
         return $proventos;
     }

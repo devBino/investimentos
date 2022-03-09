@@ -7,30 +7,36 @@ $(function(){
     $('.resgatar').click(function(){
         try{
             
-            var tipo    = $(this).attr('data-tipo')
-            var status  = $(this).attr('data-status')
-            
-            if( tipo.indexOf('RENDA VAR') != -1 && status == '1' ){
-                var id      = $(this).attr('data-id')
-                var cotacao = $(this).attr('data-cotacao')
+            if( confirm('Confirma a alteração de status de resgate do aposte selecionado?\nA ação não poderá ser desfeita futuramente...') ){
+
+                var tipo    = $(this).attr('data-tipo')
+                var status  = $(this).attr('data-status')
                 
-                cotacao = cotacao.replace('.',',')
-
-                cotacao = prompt(`Confirme o valor de cotação: `,cotacao)
-
-                if( cotacao != undefined && cotacao != null && cotacao != '' ){
-                    var url = $(`#${id}`).attr('href')
+                if( tipo.indexOf('RENDA VAR') != -1 && status == '1' ){
+                    var id      = $(this).attr('data-id')
+                    var cotacao = $(this).attr('data-cotacao')
                     
-                    url = `${url}/${cotacao}`
-                    $(`#${id}`).attr('href',url)
+                    cotacao = cotacao.replace('.',',')
 
-                    setTimeout(function(){
-                        return true
-                    },500)
+                    cotacao = prompt(`Confirme o valor de cotação: `,cotacao)
 
-                }else{
-                    return false
+                    if( cotacao != undefined && cotacao != null && cotacao != '' ){
+                        var url = $(`#${id}`).attr('href')
+                        
+                        url = `${url}/${cotacao}`
+                        $(`#${id}`).attr('href',url)
+
+                        setTimeout(function(){
+                            return true
+                        },500)
+
+                    }else{
+                        return false
+                    }
                 }
+
+            }else{
+                return false
             }
 
         }catch(e){
@@ -95,14 +101,20 @@ $(function(){
             return false
         }
 
-        var pegaCotacao     = prompt('Informe uma cotação para Renda Variável\nOu deixe em branco para renda fixa:')
-        var valorCotacao    = ''
+        if( confirm('Confirma a alteração de status de resgate dos apostes?\nA ação não poderá ser desfeita futuramente...') ){
 
-        if( !strNuloOuVazio(pegaCotacao) ){
-            valorCotacao = pegaCotacao
-        }
+            var capturaCotacao  = prompt('Informe uma cotação para Renda Variável\nOu digite 0 zero para renda fixa:')
+            
+            while( strNuloOuVazio(capturaCotacao) ){
+                capturaCotacao  = prompt('Informe uma cotação para Renda Variável\nOu digite 0 zero para renda fixa:')
+            }
 
-        if( confirm('Confirma a alteração de status de resgate dos apostes?') ){
+            var valorCotacao    = ''
+
+            if( capturaCotacao != '0' ){
+                valorCotacao = capturaCotacao
+            }
+
             $('#cotacao').val(valorCotacao)
             return true
         }else{

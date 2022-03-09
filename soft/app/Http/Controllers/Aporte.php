@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Repositories\CRUD as CRUD_DB;
 use App\Http\Repositories\Movimento as MOV;
 use App\Http\Repositories\Papel as PAP;
+use App\Http\Repositories\Aporte as APO;
 use App\Http\Repositories\Caixa as CX;
 use Illuminate\Http\Request;
 use DB;
@@ -31,6 +32,8 @@ class Aporte{
     }
 
     public function salvar(Request $request){
+        
+        //veirificações iniciais
         $params = $request->all();
         
         $valorAporte    = $params['subTotal'];
@@ -40,6 +43,7 @@ class Aporte{
             return redirect('aporte')->with('status','Saldo insuisciente...|info');
         }
 
+        //prepara dados e salva aporte
         $campos = [
             'cdPapel'=>$params['papel'],
             'valor'=>$params['valor'],
@@ -54,8 +58,21 @@ class Aporte{
 
         $acao = CRUD_DB::salvar(['tabela'=>'aportes','dados'=>$campos]);
 
+        //salva movimentação no fluxo de caixa
+        $dadosPapel = PAP::getPapel($params['papel']);
+
+        //mensagem e atualização de movimentação em caixa de acordo com acao
         if( $acao > 0 ){
+
+            CX::salvar([
+                'descricao' =>'Aportes Realizados - Código: ' . $campos['cdPapel'] . " - " . $dadosPapel[0]->nmPapel,
+                'tipo' => '2',
+                'valor' => $campos['subTotal'],
+                'dataLancamento'=>$campos['dtAporte']
+            ]);
+
             $msg = "Aporte registrado com sucesso!|success";
+            
         }else{
             $msg = "Não foi possível registrar o aporte...|danger";
         }
@@ -65,16 +82,40 @@ class Aporte{
     }
 
     public function deletar( $id ){
-        
-        $dados = [
+
+        //recupera dados do aporte e do papel
+        $dadosAporte = APO::getAporte($id);
+
+        if( !count($dadosAporte) ){
+            return redirect('aporte')->with('status','Aporte não localizado...|info');
+        }
+
+        $dadosPapel = PAP::getPapel($dadosAporte[0]->cdPapel);
+
+        if( !count($dadosPapel) ){
+            return redirect('aporte')->with('status','Papel não localizado...|info');
+        }
+
+        //prepara dados e deleta o aporte
+        $params = [
             'tabela'=>'aportes',
             'campo'=>'cdAporte',
             'valor'=>$id
         ];
 
-        $acao = CRUD_DB::deletar($dados);
+        $acao = CRUD_DB::deletar($params);
 
+        //mensagem e atualização de movimentação em caixa de acordo com acao
         if( $acao > 0 ){
+
+            //salva movimentação no fluxo de caixa
+            CX::salvar([
+                'descricao' =>'Aportes Cancelados - Código: ' . $dadosPapel[0]->cdPapel . " - " . $dadosPapel[0]->nmPapel,
+                'tipo' => '1',
+                'valor' => $dadosAporte[0]->subTotal,
+                'dataLancamento'=>date('Y-m-d H:i:s')
+            ]);
+
             $msg = "Aporte deletado com sucesso!|success";
         }else{
             $msg = "Não foi possível deletar o aporte...|danger";
