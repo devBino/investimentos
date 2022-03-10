@@ -73,3 +73,6 @@ Route::post('/informe-busca-dados','Informe@pesquisarHistoricoInforme')->middlew
 //IMPOSTO DE RENDA
 Route::get('/rendimentos','Rendimentos@index')->middleware(['IsOk']);
 Route::post('/rendimentos','Rendimentos@index')->middleware(['IsOk']);
+
+//PAGINAS NÃO ENCONTRADAS
+Route::fallback("Home@redirecionar404");

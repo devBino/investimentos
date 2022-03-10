@@ -42,4 +42,8 @@ class Home{
         return view('template.app');
     }
 
+    public function redirecionar404(){
+        return redirect('dashboard')->with('status','Página não encontrada...|danger');
+    }
+
 }

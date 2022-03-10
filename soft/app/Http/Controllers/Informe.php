@@ -5,9 +5,11 @@ use App\Http\Repositories\CRUD as CRUD_DB;
 use Illuminate\Http\Request;
 use App\Http\Repositories\ExportData as EXPDATA;
 use App\Http\Repositories\Informe as INFO;
+use App\Http\Repositories\Instituicao;
 use DB;
 
 class Informe{
+
     public $expData;
 
     public function __construct(){
@@ -15,7 +17,15 @@ class Informe{
     }
 
     public function index(){
-        return view('informe.index')->with(['data'=>INFO::getDadosInforme()]);
+        
+        $instituicoes = Instituicao::getInstituicoes();
+        
+        $data = [];
+
+        $data['dadosInforme'] = INFO::getDadosInforme();
+        $data['instituicoes'] = $instituicoes;
+
+        return view('informe.index')->with(['data'=>$data]);
     }
 
     public function pesquisarHistoricoInforme(Request $request){

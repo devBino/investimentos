@@ -1,4 +1,4 @@
-@if( isset($data['agrupamento']) && count($data['agrupamento']) > 0 )
+@if( isset($data['dadosInforme']['agrupamento']) && count($data['dadosInforme']['agrupamento']) > 0 )
 
     <script type="text/javascript">
         
@@ -9,10 +9,13 @@
             var data = google.visualization.arrayToDataTable([
                 ['Data', 'Valor'],
                 
-                @foreach($data['agrupamento'] as $num => $val)
-                    ["{{date('d-m-Y',strtotime($val->dtInforme))}}",{{ number_format($val->valor,2,'','.')}}],
-                @endforeach
-                
+                @for( $i=count($data['dadosInforme']['agrupamento']) - 1; $i>=0; $i-- )
+                    [
+                        "{{date('d-m-Y',strtotime($data['dadosInforme']['agrupamento'][$i]->dtInforme))}}",
+                        {{ number_format($data['dadosInforme']['agrupamento'][$i]->valor,2,'','.')}}
+                    ],
+                @endfor
+
             ]);
 
             var options = {

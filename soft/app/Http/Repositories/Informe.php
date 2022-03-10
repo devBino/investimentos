@@ -6,6 +6,64 @@ use Exception;
 
 class Informe{
 
+    public static function getInformes($dataFinal){
+
+        $lancamentos = DB::table('informe')
+            ->select()
+            ->where('cdUsuario',session()->get('autenticado.id_user'))
+            ->where('dtInforme','<=',$dataFinal)
+            ->orderBy('cdInforme','desc')
+            ->get();
+
+        return $lancamentos;
+
+    }
+
+    public static function getAgrupamentos($dataFinal){
+        
+        $agrupamentos = DB::table('informe')
+            ->select(
+                'cdInforme',
+                'dtInforme',
+                DB::raw('sum(valor) as valor')
+            )
+            ->where('cdUsuario',session()->get('autenticado.id_user'))
+            ->where('dtInforme','<=',$dataFinal)
+            ->groupBy('dtInforme')
+            ->orderBy('dtInforme', 'desc')
+            ->get();
+
+        return $agrupamentos;
+    }
+
+    public static function getUltimoLancamento(){
+
+        $dataUltimoLancamento = DB::table('informe')
+            ->select('dtInforme')
+            ->where('cdUsuario',session()->get('autenticado.id_user'))
+            ->orderBy('dtInforme','desc')
+            ->limit(1)
+            ->get();
+
+        if( count($dataUltimoLancamento) ){
+            $infoData   = explode("-",$dataUltimoLancamento[0]->dtInforme);
+            
+            $registros = DB::table('informe')
+                ->select()
+                ->where('cdUsuario',session()->get('autenticado.id_user'))
+                ->whereYear('dtInforme', $infoData[0])
+                ->whereMonth('dtInforme', $infoData[1])
+                ->whereDay('dtInforme', $infoData[2])
+                ->get();
+
+            return $registros;
+
+        }else{
+            return [];
+        }
+
+    }
+
     public static function getDadosInforme($params = []){
 
         $dataFinal = date('Y-m-d');
@@ -14,38 +72,11 @@ class Informe{
             $dataFinal = date('Y-m-d',strtotime($params['data']));
         }
 
-        $lancamentos = DB::table('informe')
-            ->select()
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->where('dtInforme','<=',$dataFinal)
-            ->orderBy('cdInforme','desc')
-            ->get();
-        
-        $agrupamentos = DB::table('informe')
-            ->select(
-                'dtInforme',
-                DB::raw('sum(valor) as valor')
-            )
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->where('dtInforme','<=',$dataFinal)
-            ->groupBy('dtInforme')
-            ->get();
-
-        $tiposLocais = DB::table('informe')
-            ->select('descricao')
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->distinct('descricao')
-            ->get();
-        
-        $ultimoLancamento = DB::table('informe')
-            ->select()
-            ->where('cdUsuario',session()->get('autenticado.id_user'))
-            ->orderBy('dtInforme','desc')
-            ->limit( count($tiposLocais) )
-            ->get();
+        $lancamentos        = self::getInformes($dataFinal);
+        $agrupamentos       = self::getAgrupamentos($dataFinal);
+        $ultimoLancamento   = self::getUltimoLancamento();
 
         $data['lancamentos']        = $lancamentos;
-        $data['marcador']           = count($data['lancamentos']) / 5;
         $data['agrupamento']        = $agrupamentos;
         $data['ultimoLancamento']   = $ultimoLancamento;
 
