@@ -3,99 +3,90 @@
 
 <div class="row box-title">
     <div class="col-sm-12">
-        <h6 class="text text-secondary">Preços Alvo Para Aportes/Resgates</h6>
+        <h6 class="text text-secondary">Preços Alvo Para Aportes/Resgates - Monitoramento de Alvos</h6>
     </div>
 </div>
-
-<!--<div class="row">
-    <div class="col-sm-12">
-        <div class="borda">
-            <form action="/alvo-salvar" method="post">
-                
-                <input type="hidden" id="tkn" name="_token" value="{!! csrf_token() !!}">
-
-                <fieldset class="borda">
-                    
-                    <legend>Dados do Alvo</legend>
-
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
-                            <label>Papel</label>
-                            <select name="papel" id="papel" class="form-control form-control-sm" required>
-                                <option></option>
-                                
-                                @if( isset($data['papeis']) && count($data['papeis']) )
-                                    @foreach( $data['papeis'] as $num => $val )
-                                        <option value="{{$val->cdPapel}}">{{$val->nmPapel}}</option>
-                                    @endforeach
-                                @endif
-
-                            </select>
-                        </div>
-                        <div class="col-sm-2 form-group">
-                            <label>Tipo Alvo</label>
-                            <select name="tipo" id="tipo" class="form-control form-control-sm" required>
-                                <option></option>
-                                <option value="1">APORTE</option>
-                                <option value="2">RESGATE</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-2 form-group">
-                            <label>Valor</label>
-                            <input type="number" step="0.01" id="valor" name="valor" class="form-control form-control-sm">    
-                        </div>
-                        <div class="col-sm-2 justify-content-start">
-                            <div class="btn-group">
-                                <button class="btn btn-success btn-sm mt-4 pt-2"><i class="fas fa-check pb-2"></i></button>
-                                <span class="btn btn-info btn-sm mt-4 pt-2 limpar_form"><i class="fas fa-eraser pb-2"></i></span>
-                            </div>                            
-                        </div>
-
-                        <div class="col-sm-2 justify-content-end">
-                            <div class="btn-group">
-                                <span id="atualizaCotacao" class="btn btn-info btn-sm mt-4 pt-2"><i id="icon-bt" class="fas fa-sync"></i> Atualizar Cotações</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </fieldset>
-            </form>
-        </div>
-
-    </div>
-
-</div>-->
 
 <div class="row">
     <div class="col-sm-12">
         <div class="borda">
             <div class="row p-0">
-                <div class="col-sm-6">
-                    <h6 class="text text-secondary">Monitoramento de Alvos</h6>
-                </div>
-                <div class="col-sm-6">
+
+                <div class="col-sm-12">
                     
                     <form action="/alvo-ordenar" method="post">
                         <input id="tkn" type="hidden" name="_token" value="{!! csrf_token() !!}">
                         <div class="row">
-                            <div class="col-sm-5 form-group">
+                            
+                            <div class="col-sm-2 form-group">
+                                <input type="number" id="valorSimulacao" name="valorSimulacao" placeholder="Valor Simulação" class="form-control form-control-sm"
+                                    
+                                    @if( isset($data['params']) && isset($data['params']['valorSimulacao']))
+                                        value="{{$data['params']['valorSimulacao']}}"
+                                    @endif
+                                    
+                                >
+                            </div>
+
+                            @php
+                                $filtros = [
+                                    "0"=>"Ordernar",
+                                    "1"=>"Preço Médio",
+                                    "2"=>"Cotação",
+                                    "3"=>"Último Valor Pago - Cotação",
+                                    "4"=>"Preço Médio - Cotação",
+                                    "5"=>"DY",
+                                    "6"=>"Valor Retornado Anual",
+                                    "7"=>"Quantidade de Cotas",
+                                    "8"=>"Dias Último Aporte"
+                                ];
+                            @endphp
+
+                            <div class="col-sm-4 form-group">
                                 <select name="ordenacao" id="ordenacao" class="form-control form-control-sm" required>
-                                    <option value="1">Ordenar</option>
-                                    <option value="1">Preço Médio</option>
-                                    <option value="2">Cotação</option>
-                                    <option value="3">Alvo - Cotação</option>
-                                    <option value="4">Preço Médio - Cotação</option>
+                                    @foreach($filtros as $num => $val)
+                                        @if( isset($data['params']) && isset($data['params']['ordenacao']) && $num == $data['params']['ordenacao'])
+                                            <option value="{{$num}}" selected>{{$val}}</option>
+                                        @else
+                                            <option value="{{$num}}">{{$val}}</option>
+                                        @endif
+                                    @endforeach
                                 </select>
                             </div>
-                            <div class="col-sm-5 form-group">
+
+                            @php
+                                $filtros = [
+                                    "0"=>"Tipo",
+                                    "1"=>"Asc",
+                                    "2"=>"Desc"
+                                ];
+                            @endphp
+
+                            <div class="col-sm-2 form-group">
                                 <select name="tipo" id="tipo" class="form-control form-control-sm" required>
-                                    <option value="1">Tipo</option>
-                                    <option value="1">Asc</option>
-                                    <option value="2">Desc</option>
+                                    
+                                    @foreach($filtros as $num => $val)
+                                        @if( isset($data['params']) && isset($data['params']['tipo']) && $num == $data['params']['tipo'])
+                                            <option value="{{$num}}" selected>{{$val}}</option>
+                                        @else
+                                            <option value="{{$num}}">{{$val}}</option>
+                                        @endif
+                                    @endforeach
+
                                 </select>
                             </div>
+
+                            <div class="col-sm-2 form-group">
+                                <input type="number" id="historicoMeses" name="historicoMeses" placeholder="Meses de Histórico" class="form-control form-control-sm"
+                                    @if( isset($data['params']) && isset($data['params']['historicoMeses']))
+                                        value="{{$data['params']['historicoMeses']}}"
+                                    @endif
+                                >
+                            </div>
+
                             <div class="col-sm-2 form-group d-flex justify-content-start">
                                 <button class="btn btn-info btn-sm"><i class="fas fa-filter"></i></button>   
+                                <span class="btn btn-info btn-sm ml-1 limpar_form"><i class="fas fa-eraser"></i></span>
                                 <span id="atualizaCotacao" class="btn btn-info btn-sm ml-1"><i id="icon-bt" class="fas fa-sync"></i></span>
                             </div>
                         </div>
@@ -108,15 +99,18 @@
                 <thead>
                     <tr class="table-active">
                         <th>Papel</th>
-                        <th>Ativo</th>
                         <th>Preço Médio</th>
-                        <th>Preço Alvo</th>
+                        <th>Ultimo Valor Pago</th>
                         <th>Cotação</th>
-                        <th>Alvo - Cotação</th>
+                        <th>Ultimo Valor Pago - Cotação</th>
                         <th>Preço Médio - Cotação</th>
-                        <th>Tipo</th>
-                        <th>Último Aporte</th>
-                        <th colspan='2'><center>-</center></th>
+                        <th>Dy Ano</th>
+                        <th>Valor Simulado</th>
+                        <th>Cotas</th>
+                        <th>Proventos Mensais</th>
+                        <th>Proventos Anuais</th>
+                        <th>Dias Último Aporte</th>
+                        <th><center>-</center></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -131,9 +125,8 @@
                                     <td><span class="text text-danger">{{$val['nmPapel']}}</span></td>
                                 @endif
 
-                                <td>{{$val['ativo']}}</td>
                                 <td>R$ {{number_format($val['precoMedio'],2,',','.')}}</td>
-                                <td>R$ {{number_format($val['precoAlvo'],2,',','.')}}</td>
+                                <td>R$ {{number_format($val['ultimoPrecoPago'],2,',','.')}}</td>
                                 <td>
                                     <input type="number" step="0.01" class="form-control form-control-sm text-cotacoes" data-papel="{{$val['cdPapel']}}" value="{{$val['cotacao']}}">
                                 </td>
@@ -152,14 +145,21 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if( $val['tipo'] == 1 )
-                                        Aporte
-                                    @else
-                                        Resgate
-                                    @endif
+                                    {{ number_format($val['dyAno'],2,',','.') }}%
                                 </td>
-                                <td>{{$val['ultimaOco']}}</td>
-                                <td><center><span class="btn btn-info btn-sm edita" data-dados="{{$val['codPapel']}}|{{$val['tipo']}}|{{$val['precoAlvo']}}"><i class="fas fa-edit"></i></span></center></td>
+                                <td>
+                                    {{ number_format($val['valorSimulacao'],2,',','.') }}
+                                </td>
+                                <td>
+                                    {{ $val['cotasSimulacao'] }}
+                                </td>
+                                <td>
+                                    {{ number_format($val['dividendosSimulacaoMensal'],2,',','.') }}
+                                </td>
+                                <td>
+                                    {{ number_format($val['dividendosSimulacaoAnual'],2,',','.') }}
+                                </td>
+                                <td>{{$val['diasUltimoAporte']}}</td>
                                 <td><center><a href="/alvo-deletar/{{$val['codPapel']}}_{{$val['tipo']}}" class="btn btn-danger btn-sm deleta"><i class="fas fa-trash"></i></a></center></td>
                             </tr>
                             

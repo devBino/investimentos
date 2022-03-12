@@ -69,13 +69,13 @@ class Movimento{
             }
 
         }
-
+        
 
         $aportes = $aportes->where('pp.cdUsuario',session()->get('autenticado.id_user'))
             ->where('a.cdUsuario',session()->get('autenticado.id_user'))
+            ->orderBy('a.dtAporte','desc')
             ->orderBy('pp.cdTipo','asc')
             ->orderBy('pp.cdPapel','asc')
-            ->orderBy('a.dtAporte','asc')
             ->paginate($qtdePaginas);
             
         foreach( $aportes as $num => $val ){

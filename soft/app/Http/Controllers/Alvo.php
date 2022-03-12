@@ -8,12 +8,10 @@ use DB;
 
 class Alvo{
     
-    public $tipoOrdenacao   = 2;
-    public $ordem           = 1;
-
-    public function __construct(){
-
-    }
+    private $tipoOrdenacao   = 2;
+    private $ordem           = 1;
+    private $valorSimulacao  = 1000.00;
+    private $historicoMeses = 6;
 
     public function index(){
         
@@ -33,12 +31,20 @@ class Alvo{
         //pega parametro de ordenação
         $params = $request->all();
 
+        if( isset($params['valorSimulacao']) && !empty($params['valorSimulacao']) ){
+            $this->valorSimulacao = $params['valorSimulacao'];
+        }
+
         if( isset($params['ordenacao']) && !empty($params['ordenacao']) ){
             $this->tipoOrdenacao = $params['ordenacao'];
         }
 
         if( isset($params['tipo']) && !empty($params['tipo']) ){
             $this->ordem = $params['tipo'];
+        }
+
+        if( isset($params['historicoMeses']) && !empty($params['historicoMeses']) ){
+            $this->historicoMeses = $params['historicoMeses'];
         }
         
         //pega dados e monta data para view
@@ -52,7 +58,8 @@ class Alvo{
 
         $papeis = [
             'papeis'=>$listaPapeis,
-            'listagem'=>self::getListaAlvos($listaPapeis)
+            'listagem'=>self::getListaAlvos($listaPapeis),
+            'params'=>$params
         ];
         
         return view('alvo.index')->with(['data'=>$papeis]);    
@@ -90,97 +97,66 @@ class Alvo{
                 continue;
             }
 
-            $dadosUltimoAporte = DB::table('aportes')
-                ->select('dtAporte')
-                ->where('cdUsuario',session()->get('autenticado.id_user'))
-                ->where('cdPapel',$val->cdPapel)
-                ->orderBy('dtAporte','desc')
-                ->limit('1')
-                ->get();
-
-            $dadosAtualizacaoDiaria = DB::table('historicoCotacoes')
-                ->select('dtCotacao')
-                ->where('cdUsuario',session()->get('autenticado.id_user'))
-                ->where('cdPapel',$val->cdPapel)
-                ->orderBy('dtCotacao','desc')
-                ->limit(1)
-                ->get();
+            $dadosUltimoAporte = PAP::getUltimoAporte($val->cdPapel);
+            $dadosAtualizacaoDiaria = PAP::getUltimaCotacao($val->cdPapel);
             
-            $ultimoAporte = "Nunca";
+            $mediaProventos = PAP::mediaProventos($val->cdPapel, $this->historicoMeses);
+            $val->mediaProventos = $mediaProventos;
+            $val->dyMes = ($mediaProventos / $val->cotacao) * 100;
+            $val->dyAno = $val->dyMes * 12;
+
+            $diasUltimoAporte = 0;
 
             if( count($dadosUltimoAporte) ){
-                
-                $dias = ( time() - strtotime($dadosUltimoAporte[0]->dtAporte) ) / (24 *  3600);
-                
-                $horas = ( time() - strtotime($dadosUltimoAporte[0]->dtAporte) ) / 3600;
-                $horas = (int) $horas;
-
-                $dias = (int) $dias;
-
-                if( $dias > 0 ){
-                    $ultimoAporte = date('Y-m-d',strtotime($dadosUltimoAporte[0]->dtAporte)) . " / Há ".$dias. " Dia(s).";
-                }else{
-                    if( $horas > 24 ){
-                        $ultimoAporte = date('Y-m-d',strtotime($dadosUltimoAporte[0]->dtAporte)) . " / Há ".$dias. " Dia(s).";
-                    }else if( $horas < 24 ){
-                        if( date('d',strtotime($dadosUltimoAporte[0]->dtAporte)) == date('d',time()) ){
-                            $ultimoAporte = date('Y-m-d',strtotime($dadosUltimoAporte[0]->dtAporte)) . " / Hoje. ";    
-                        }else{
-                            $ultimoAporte = date('Y-m-d',strtotime($dadosUltimoAporte[0]->dtAporte)) . " / Há ".$horas. " Hora(s).";
-                        }
-                    }else{
-                        $ultimoAporte = date('Y-m-d',strtotime($dadosUltimoAporte[0]->dtAporte)) . " / Hoje. ";
-                    }
-                }
+                $dias = ( time() - strtotime($dadosUltimoAporte[0]->dtAporte) ) / (24 *  3600);                
+                $diasUltimoAporte = intval($dias);
             }
 
-            
             $valorPrecoMedioPapel = $this->precoMedioPapel($val->cdPapel);
 
             $dadosAlvoAporte    = [];
             
             if( $val->cdTipo == 2 && $valorPrecoMedioPapel > 0 ){
+
                 $dadosAlvoAporte['precoAlvo']   = (float) self::getPrecoAlvo($val->cdPapel, session()->get('autenticado.id_user'));
                 $dadosAlvoAporte['precoAlvo']   = number_format($dadosAlvoAporte['precoAlvo'],2,'.','');
                 $dadosAlvoAporte['tipo']        = 1;
                 $dadosAlvoAporte['codPapel']    = $val->cdPapel;
-
                 $dadosAlvoAporte['cdPapel']     = $val->cdPapel;
                 $dadosAlvoAporte['nmPapel']     = $val->nmPapel;
                 $dadosAlvoAporte['precoMedio']  = $valorPrecoMedioPapel;
                 $dadosAlvoAporte['cotacao']     = $val->cotacao;
-                $dadosAlvoAporte['diferenca']   = $dadosAlvoAporte['precoAlvo'] - $val->cotacao;
-                $dadosAlvoAporte['ativo']       = unserialize(Redis::get('sub_tipo_papel'))[$val->subTipo];
-                $dadosAlvoAporte['ultimaOco']   = $ultimoAporte;
+
+                $dadosAlvoAporte['ultimoPrecoPago']     = $dadosUltimoAporte[0]->valor;
+                $dadosAlvoAporte['diasUltimoAporte']    = $diasUltimoAporte;
+                $dadosAlvoAporte['diferenca']           = $dadosAlvoAporte['ultimoPrecoPago'] - $val->cotacao;
+                $dadosAlvoAporte['ativo']               = unserialize(Redis::get('sub_tipo_papel'))[$val->subTipo];
+
                 $dadosAlvoAporte['comparaPrecoMedioCotacao']    = $dadosAlvoAporte['precoMedio'] - $dadosAlvoAporte['cotacao'];
-                $dadosAlvoAporte['atualizacaoDiaria'] = count($dadosAtualizacaoDiaria) ? $dadosAtualizacaoDiaria[0]->dtCotacao : 0;
+                $dadosAlvoAporte['atualizacaoDiaria']           = count($dadosAtualizacaoDiaria) ? $dadosAtualizacaoDiaria[0]->dtCotacao : 0;
+                $dadosAlvoAporte['mediaProventos']              = number_format($val->mediaProventos,2,',','.');
+
+                $dadosAlvoAporte['dyAno'] = $val->dyAno;
+                $dadosAlvoAporte['dyMes'] = $val->dyMes;
+
+                $dadosAlvoAporte['valorSimulacao']              = $this->valorSimulacao;
+                $dadosAlvoAporte['cotasSimulacao']              = floor($this->valorSimulacao / $val->cotacao);
+                $dadosAlvoAporte['dividendosSimulacaoMensal']   = ($dadosAlvoAporte['cotasSimulacao'] * $val->mediaProventos);
+                $dadosAlvoAporte['dividendosSimulacaoAnual']    = ($dadosAlvoAporte['cotasSimulacao'] * $val->mediaProventos) * 12;
                 
                 $return[] = $dadosAlvoAporte;
+
             }
             
-            /*$dadosAlvoResgate   = [];
-
-            if( $dadosAlvoResgate ){
-                $dadosAlvoResgate['cdPapel']    = $val->cdPapel;
-                $dadosAlvoResgate['nmPapel']    = $val->nmPapel;
-                $dadosAlvoResgate['precoMedio'] = 0.00;
-                $dadosAlvoResgate['cotacao']    = $val->cotacao;
-                $dadosAlvoResgate['diferenca']  = $val->cotacao - $dadosAlvoResgate['precoAlvo'];
-                $dadosAlvoResgate['ativo']      = unserialize(Redis::get('sub_tipo_papel'))[$val->subTipo];
-                $dadosAlvoResgate['ultimaOco']  = "-";
-                $dadosAlvoResgate['comparaPrecoMedioCotacao']    = $dadosAlvoResgate['precoMedio'] - $dadosAlvoResgate['cotacao'];
-                $dadosAlvoResgate['atualizacaoDiaria'] = count($dadosAtualizacaoDiaria) ? $dadosAtualizacaoDiaria[0]->dtCotacao : 0;
-                $return[] = $dadosAlvoResgate;
-            }*/
-
         }
 
         $return = $this->ordenaListaAlvos($return);
-
+        
         return $return;
     }
 
     public function ordenaListaAlvos($lista){
+
         $arrMemoria = [];
         $return     = $lista;
 
@@ -189,7 +165,11 @@ class Alvo{
             'precoMedio',
             'cotacao',
             'diferenca',
-            'comparaPrecoMedioCotacao'
+            'comparaPrecoMedioCotacao',
+            'dyAno',
+            'dividendosSimulacaoAnual',
+            "cotasSimulacao",
+            'diasUltimoAporte'
         ];
 
         for( $i=0;$i<count($return);$i++ ){

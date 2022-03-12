@@ -84,10 +84,11 @@ class Papel{
     public static function getUltimoAporte($cdPapel){
         
         $aporte = DB::table('aportes')
-            ->select('dtAporte')
+            ->select('valor','dtAporte')
             ->where('cdUsuario',session()->get('autenticado.id_user'))
             ->where('cdPapel',$cdPapel)
             ->where('cdStatus',1)
+            ->orderBy('dtAporte','desc')
             ->limit(1)
             ->get();
 
@@ -274,6 +275,32 @@ class Papel{
 
     }
 
+    public static function mediaProventos($cdPapel, $historicoMeses){
+
+        $dados = DB::table('proventos')
+            ->select('valor')
+            ->where('cdPapel',$cdPapel)
+            ->orderBy('dtProvento','desc')
+            ->limit($historicoMeses)
+            ->get();
+        
+        $media = 0.00;
+        $total = 0.00;
+
+        for($i=0; $i<count($dados); $i++){
+            
+            $total += $dados[$i]->valor;
+
+            if( $i == count($dados) - 1 ){
+                $media = $total / count($dados);
+            }
+
+        }
+        
+        return $media;
+
+    }
+
     public static function getContagemPapeis($params=[]){
             
         $papeis = DB::table('papel')
@@ -317,6 +344,22 @@ class Papel{
         return $papeis;
         
     }
+
+    public static function getUltimaCotacao($cdPapel){
+        
+        $dados = DB::table('historicoCotacoes')
+                ->select('dtCotacao')
+                ->where('cdUsuario',session()->get('autenticado.id_user'))
+                ->where('cdPapel',$cdPapel)
+                ->orderBy('dtCotacao','desc')
+                ->limit(1)
+                ->get();
+
+        return $dados;
+
+    }
+
+    
 
 
 }

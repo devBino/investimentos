@@ -20,6 +20,7 @@ class Rentabilidade{
      * ])
     */
     public static function calculoRentabilidade($params = [], $returnDetalhes = false){
+        
         $capital        = $params['capital'];
         $dtAporte       = $params['dtAporte'];
         $dtAtual        = date('Y-m-d H:i:s');
