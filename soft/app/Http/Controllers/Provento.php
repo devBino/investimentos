@@ -186,7 +186,7 @@ class Provento{
 
                 
                 //busca aporte mais antigo não resgatado                
-                $dadosUltimoAporte = PAP::getUltimoAporte($papeis[$i]->cdPapel);
+                $dadosUltimoAporte = PAP::getPrimeiroAporteAtivo($papeis[$i]->cdPapel);
                 
                 //caso nunca tenha aportado no papel
                 if( !count($dadosUltimoAporte) || !isset($dadosUltimoAporte[0]->dtAporte) ){

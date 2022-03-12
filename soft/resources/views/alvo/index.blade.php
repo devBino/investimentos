@@ -104,9 +104,9 @@
                         <th>Cotação</th>
                         <th>Ultimo Valor Pago - Cotação</th>
                         <th>Preço Médio - Cotação</th>
-                        <th>Dy Ano</th>
                         <th>Valor Simulado</th>
                         <th>Cotas</th>
+                        <th>Dy Ano</th>
                         <th>Proventos Mensais</th>
                         <th>Proventos Anuais</th>
                         <th>Dias Último Aporte</th>
@@ -145,13 +145,13 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{ number_format($val['dyAno'],2,',','.') }}%
-                                </td>
-                                <td>
                                     {{ number_format($val['valorSimulacao'],2,',','.') }}
                                 </td>
                                 <td>
                                     {{ $val['cotasSimulacao'] }}
+                                </td>
+                                <td>
+                                    {{ number_format($val['dyAno'],2,',','.') }}%
                                 </td>
                                 <td>
                                     {{ number_format($val['dividendosSimulacaoMensal'],2,',','.') }}

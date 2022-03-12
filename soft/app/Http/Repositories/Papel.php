@@ -74,11 +74,26 @@ class Papel{
 
         for( $i=0; $i<count($papeis); $i++ ){
             $papeis[$i]->cotas = self::getQuantidadeCotasPapel(
-                $papeis[$i]->cdPapel, self::getUltimoAporte($papeis[$i]->cdPapel)
+                $papeis[$i]->cdPapel, self::getPrimeiroAporteAtivo($papeis[$i]->cdPapel)
             );
         }
 
         return $papeis;
+    }
+
+    public static function getPrimeiroAporteAtivo($cdPapel){
+        
+        $aporte = DB::table('aportes')
+            ->select('valor','dtAporte')
+            ->where('cdUsuario',session()->get('autenticado.id_user'))
+            ->where('cdPapel',$cdPapel)
+            ->where('cdStatus',1)
+            ->orderBy('dtAporte','asc')
+            ->limit(1)
+            ->get();
+
+        return $aporte;
+
     }
 
     public static function getUltimoAporte($cdPapel){
@@ -101,7 +116,7 @@ class Papel{
         if( !count($dadosUltimoAporte) ){
             return 0;
         }
-
+        
         $quantidade = DB::table('aportes')
             ->select('qtde')
             ->where('cdUsuario',session()->get('autenticado.id_user'))
