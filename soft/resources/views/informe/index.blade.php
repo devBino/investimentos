@@ -96,6 +96,37 @@
 </div>
 
 
+<div id="modal" class="modal">
+    <div class="panel-modal">
+        <div class="row modal-header pb-0 pt-0 ">
+            <div class="col-sm-11">
+                <h4 class="text text-info">Informes na Data <span id="sp-data"></span></h4>
+            </div>
+            <div class="col-sm-1 d-flex justify-content-end">
+                <span id="btFechaModal" class="btn btn-default bg-dark text text-light mt-1 mb-1 mr-1"><i class="fas fa-times-circle"></i></span>
+            </div>
+        </div>
+        <div class="row modal-body">
+            
+            <div class="col-sm-12">
+
+                <table class="table table-bordered table-sm table-striped" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <th>Id</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                    </thead>
+                    <tbody id="tbody-informes">
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <script src="{{ asset('/js/informe.js') }}"></script>
 
 @stop

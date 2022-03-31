@@ -69,6 +69,7 @@ Route::get('/informe','Informe@index')->middleware(['IsOk']);
 Route::post('/informe-salvar','Informe@salvar')->middleware(['IsOk']);
 Route::get('/informe-deletar/{id}','Informe@deletar')->middleware(['IsOk']);
 Route::post('/informe-busca-dados','Informe@pesquisarHistoricoInforme')->middleware(['IsOk']);
+Route::post('/informe-data','Informe@pesquisarInformesData')->middleware(['IsOk']);
 
 //IMPOSTO DE RENDA
 Route::get('/rendimentos','Rendimentos@index')->middleware(['IsOk']);

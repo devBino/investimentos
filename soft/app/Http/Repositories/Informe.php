@@ -19,6 +19,23 @@ class Informe{
 
     }
 
+    public static function getInformesData($params){
+
+        if( !isset($params['data']) || empty($params['data']) ){
+            return [];
+        }
+
+        $lancamentos = DB::table('informe')
+            ->select()
+            ->where('cdUsuario',session()->get('autenticado.id_user'))
+            ->where('dtInforme','=',$params['data'])
+            ->orderBy('cdInforme','desc')
+            ->get();
+
+        return $lancamentos;
+
+    }
+
     public static function getAgrupamentos($dataFinal){
         
         $agrupamentos = DB::table('informe')
@@ -34,6 +51,7 @@ class Informe{
             ->get();
 
         return $agrupamentos;
+
     }
 
     public static function getUltimoLancamento(){
@@ -82,5 +100,7 @@ class Informe{
 
         return $data;
     }
+
+
 
 }

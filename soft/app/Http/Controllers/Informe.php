@@ -28,6 +28,11 @@ class Informe{
         return view('informe.index')->with(['data'=>$data]);
     }
 
+    public function pesquisarInformesData(Request $request){
+        $informes = ['informes'=>INFO::getInformesData($request->all())];
+        return response($informes)->header('Content-Type','application/json');
+    }
+
     public function pesquisarHistoricoInforme(Request $request){
         $html = view('graficos.informe')->with(['data'=>INFO::getDadosInforme( $request->all() )])->render();
         return response(['html'=>$html])->header('Content-Type','application/json');
