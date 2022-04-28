@@ -16,6 +16,7 @@ class Rendimentos{
                 'p.nmPapel',
                 'p.cdTipo',
                 'p.subTipo',
+                'r.dtResgate',
                 DB::raw('null as rendimentos'),
                 DB::raw('0.00 as irDevido')
             )
@@ -24,6 +25,10 @@ class Rendimentos{
         
         if( isset($params['ano']) && !empty($params['ano']) ){
             $dados = $dados->whereYear('r.dtResgate',$params['ano']);
+        }
+
+        if( isset($params['mes']) && !empty($params['mes']) ){
+            $dados = $dados->whereMonth('r.dtResgate',$params['mes']);
         }
 
         if( isset($params['subTipo']) && !empty($params['subTipo']) ){
